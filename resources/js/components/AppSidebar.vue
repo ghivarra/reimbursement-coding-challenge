@@ -9,7 +9,7 @@ import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Dasbor',
         href: 'dashboard',
         icon: 'LayoutGrid',
     },
