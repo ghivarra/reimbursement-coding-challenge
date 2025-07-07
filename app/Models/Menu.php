@@ -48,7 +48,7 @@ class Menu extends Model
      */
     protected $fillable = [
         'name',
-        'uri',
+        'route_name',
         'icon',
         'sort_order',
     ];

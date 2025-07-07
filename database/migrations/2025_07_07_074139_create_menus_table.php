@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('uri', 200);
+            $table->string('route_name', 200);
             $table->string('icon', 60);
             $table->string('sort_order', 60);
         });
