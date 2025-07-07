@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('roles_id', false, true)->index();
-            $table->bigInteger('modules_id', false, true)->index();
-            $table->foreign('roles_id')->references('id')->on('roles')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('modules_id')->references('id')->on('modules')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->bigInteger('role_id', false, true)->index();
+            $table->bigInteger('module_id', false, true)->index();
+
+            // assign foreign key
+            $table->foreign('role_id')->references('id')->on('roles')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('module_id')->references('id')->on('modules')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -29,8 +31,8 @@ return new class extends Migration
     {
         // altering index and foreign keys
         Schema::table($this->tableName, function(Blueprint $table) {
-            $table->dropForeign("{$this->tableName}_roles_id_foreign");
-            $table->dropForeign("{$this->tableName}_modules_id_foreign");
+            $table->dropForeign("{$this->tableName}_role_id_foreign");
+            $table->dropForeign("{$this->tableName}_module_id_foreign");
         });
 
         Schema::dropIfExists($this->tableName);
