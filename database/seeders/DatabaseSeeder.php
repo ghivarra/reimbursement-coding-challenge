@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Module;
 use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $roleID = $this->createRole();
         $this->createDefaultUser($roleID);
+        $this->createDefaultModules();
     }
 
     //===================================================================================================
@@ -43,6 +45,24 @@ class DatabaseSeeder extends Seeder
         $user->password = 'user12345';
         $user->role_id = $roleID;
         $user->save();
+    }
+
+    //===================================================================================================
+
+    private function createDefaultModules(): void
+    {
+        // add modules
+        $modules = [
+            // roles
+            ['name' => 'role.index', 'description' => 'Endpoint untuk mengakses semua jenis role.'],
+            ['name' => 'role.find', 'description' => 'Endpoint untuk mengakses satu role.'],
+            ['name' => 'role.create', 'description' => 'Endpoint untuk membuat role.'],
+            ['name' => 'role.update', 'description' => 'Endpoint untuk memperbaharui data role.'],
+            ['name' => 'role.delete', 'description' => 'Endpoint untuk menghapus role.'],
+        ];
+
+        // insert modules
+        Module::insert($modules);
     }
 
     //===================================================================================================

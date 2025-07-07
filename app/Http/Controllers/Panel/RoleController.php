@@ -7,9 +7,83 @@ use App\Library\FilterLibrary;
 use App\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
+    public function create(Request $request): JsonResponse
+    {
+        // input
+        $input = $request->validate([
+            'name'          => ['unique:roles,name', 'max:100', 'alpha_dash'],
+            'is_superadmin' => ['numeric', 'in:0,1'],
+        ]);
+
+        // create
+        $role = new Role;
+        $role->name = $input['name'];
+        $role->is_superadmin = $input['is_superadmin'];
+        $role->save();
+
+        // return
+        return response()->json([
+            'message' => 'Data berhasil dibuat',
+            'data'    => [
+                'id'            => $role->id,
+                'name'          => $role->name,
+                'is_superadmin' => $role->is_superadmin,
+            ],
+        ], 200);
+    }
+
+    //====================================================================================================
+
+    public function delete(Request $request): JsonResponse
+    {
+        // find
+        $id   = $request->input('id');
+        $role = Role::find($id);
+        
+        if (empty($role))
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => [
+                    'Data tidak ditemukan'
+                ],
+            ], 422);
+        }
+
+        // return
+        return response()->json([
+            'status'  => 'success',
+            'message' => "Role {$role->name} berhasil dihapus",
+        ], 200);
+    }
+
+    //====================================================================================================
+
+    public function find(Request $request): JsonResponse
+    {
+        // input
+        $input = $request->validate([
+            'id' => ['numeric']
+        ]);
+        
+        // get based on roles
+        $result = Role::select(['id', 'name', 'is_superadmin'])->find($input['id']);
+
+        // return
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $result,
+        ], 200);
+    }
+
+    //====================================================================================================
+
     public function index(Request $request): JsonResponse
     {
         // columns
@@ -18,12 +92,24 @@ class RoleController extends Controller
         ];
 
         // get input query
-        $input = $request->validate([
+        $validator = Validator::make($request->all(), [
             'limit'        => ['numeric', 'max:10'],
             'offset'       => ['numeric'],
             'order.column' => ['in:' . implode(',', $columns)],
             'order.dir'    => ['in:asc,desc'],
         ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
 
         // query
         // format: ['query']['status']
@@ -50,6 +136,51 @@ class RoleController extends Controller
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
             'data'    => $result
+        ], 200);
+    }
+
+    //====================================================================================================
+
+    public function update(Request $request): JsonResponse
+    {
+        // find
+        $id   = $request->input('id');
+        $role = Role::find($id);
+        
+        if (empty($role))
+        {
+             return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => [
+                    'Data tidak ditemukan'
+                ],
+            ], 422);
+        }
+
+        // get form
+        $validator = Validator::make($request->all(), [
+            
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
+        
+
+        // return
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Data berhasil diperbaharui',
+            'data'    => [],
         ], 200);
     }
 
