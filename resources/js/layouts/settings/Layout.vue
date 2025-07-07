@@ -12,11 +12,11 @@ const sidebarNavItems: NavItem[] = [
 //    },
     {
         title: 'Kata Sandi',
-        href: '/settings/password',
+        href: route('password.edit'),
     },
     {
         title: 'Tampilan',
-        href: '/settings/appearance',
+        href: route('appearance'),
     },
 ];
 

@@ -11,7 +11,7 @@ import SettingsLayout from '@/layouts/settings/Layout.vue';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
         title: 'Pengaturan Tampilan',
-        href: '/settings/appearance',
+        href: route('appearance'),
     },
 ];
 </script>

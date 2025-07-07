@@ -7,7 +7,7 @@ import { Head } from '@inertiajs/vue3';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dasbor',
-        href: '/dashboard',
+        href: route('dashboard'),
     },
 ];
 </script>

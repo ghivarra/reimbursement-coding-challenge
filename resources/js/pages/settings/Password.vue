@@ -14,7 +14,7 @@ import { type BreadcrumbItem } from '@/types';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
         title: 'Ubah Kata Sandi',
-        href: '/settings/password',
+        href: route('password.edit'),
     },
 ];
 
