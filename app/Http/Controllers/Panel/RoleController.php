@@ -160,7 +160,8 @@ class RoleController extends Controller
 
         // get form
         $validator = Validator::make($request->all(), [
-            
+            'name'          => ['alpha_dash', "unique:roles,name,{$id},id", "max:100"],
+            'is_superadmin' => ['in:0,1'],
         ]);
 
         if ($validator->fails())
@@ -175,12 +176,16 @@ class RoleController extends Controller
         // input
         $input = $validator->validated();
         
+        // save
+        $role->name = $input['name'];
+        $role->is_superadmin = $input['is_superadmin'];
+        $role->save();
 
         // return
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil diperbaharui',
-            'data'    => [],
+            'data'    => $role,
         ], 200);
     }
 
