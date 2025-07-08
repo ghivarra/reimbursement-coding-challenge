@@ -114,8 +114,9 @@ class DatabaseSeeder extends Seeder
     private function createStatuses(): void
     {
         $statuses = [
-            ['name' => 'Pengajuan', 'action' => 'diajukan', 'template' => 'Pengajuan reimbursement {$name} sudah {$action} oleh {$owner}.'],
-            ['name' => 'Revisi', 'action' => 'direvisi', 'template' => 'Pengajuan reimbursement {$name} dikembalikan dan harus {$action} oleh {$owner}.'],
+            ['name' => 'Diajukan', 'action' => 'diajukan', 'template' => 'Pengajuan reimbursement {$name} sudah {$action} oleh {$owner}.'],
+            ['name' => 'Dikembalikan', 'action' => 'dikembalikan', 'template' => 'Pengajuan reimbursement {$name} {$action} dan harus direvisi oleh {$owner}.'],
+            ['name' => 'Revisi', 'action' => 'direvisi', 'template' => 'Pengajuan reimbursement {$name} sudah {$action} dan diajukan kembali oleh {$owner}.'],
             ['name' => 'Disetujui', 'action' => 'disetujui', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
             ['name' => 'Ditolak', 'action' => 'ditolak', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
         ];
