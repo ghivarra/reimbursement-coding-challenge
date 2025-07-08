@@ -96,13 +96,13 @@ class UserController extends Controller
         // get based on roles
         $result = User::select(['users.id', 'users.name', 'password', 'role_id', 'roles.name as role_name', 'email'])
                       ->join('roles', 'role_id', '=', 'roles.id')
-                      ->find($input['id']);
+                      ->first($input['id']);
 
         // return
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $result,
+            'data'    => empty($result) ? [] : $result,
         ], 200);
     }
 
@@ -164,7 +164,7 @@ class UserController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $result
+            'data'    => empty($result) ? [] : $result
         ], 200);
     }
 

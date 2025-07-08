@@ -101,13 +101,13 @@ class RoleController extends Controller
         $input = $validator->validated();
         
         // get based on roles
-        $result = Role::select(['id', 'name', 'is_superadmin'])->find($input['id']);
+        $result = Role::select(['id', 'name', 'is_superadmin'])->first($input['id']);
 
         // return
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $result,
+            'data'    => empty($result) ? [] : $result,
         ], 200);
     }
 
@@ -164,7 +164,7 @@ class RoleController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $result
+            'data'    => empty($result) ? [] : $result
         ], 200);
     }
 
@@ -263,7 +263,7 @@ class RoleController extends Controller
         }
 
         // role
-        $role = Role::select('name')->find($input['id']);
+        $role = Role::select('name')->first($input['id']);
 
         // return
         return response()->json([
@@ -317,7 +317,7 @@ class RoleController extends Controller
         }
 
         // role
-        $role = Role::select('name')->find($input['id']);
+        $role = Role::select('name')->first($input['id']);
 
         // return
         return response()->json([

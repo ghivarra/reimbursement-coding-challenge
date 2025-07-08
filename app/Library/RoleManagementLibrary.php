@@ -15,7 +15,7 @@ class RoleManagementLibrary
         // get current user data
         $user = User::select('users.role_id', 'is_superadmin')
                     ->join('roles', 'users.role_id', '=', 'roles.id')
-                    ->find($userID);
+                    ->first($userID);
         
         // false if empty
         if (empty($user))

@@ -8,9 +8,49 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Library\FilterLibrary;
+use App\Models\ReimbursementStatus;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    public function checkLimit(Request $request): JsonResponse
+    {
+        // input
+        // get input query
+        $validator = Validator::make($request->all(), [
+            'category_id' => ['numeric', 'exists:reimbursements_categories,id'],
+            'date'        => ['date', 'date_format:Y-m-d'],
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // parse input
+        $input = $validator->validated();
+        $dates = explode('-', $input['date']);
+
+        // parameter
+        $month  = $dates[1];
+        $userID = Auth::id();
+
+        // get id disetujui
+        $status = ReimbursementStatus::select('id')->where('name', 'Disetujui')->limit(1)->first();
+
+        // get sum
+        // $currentAmount = 
+
+        // check total limit
+        return response()->json([], 200);
+    }
+
+    //====================================================================================================
+
     public function create(Request $request): JsonResponse
     {
         // get input query
@@ -80,19 +120,32 @@ class CategoryController extends Controller
     public function find(Request $request): JsonResponse
     {
         // input
-        $input = $request->validate([
+        // get input query
+        $validator = Validator::make($request->all(), [
             'id' => ['numeric']
         ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
         
         // get based on roles
         $result = ReimbursementCategory::select(['id', 'name', 'code', 'limit_per_month'])
-                                       ->find($input['id']);
+                                       ->first($input['id']);
 
         // return
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $result,
+            'data'    => empty($result) ? [] : $result,
         ], 200);
     }
 
@@ -106,7 +159,7 @@ class CategoryController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $data,
+            'data'    => empty($data) ? [] : $data,
         ], 200);
     }
 
@@ -167,7 +220,7 @@ class CategoryController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $result
+            'data'    => empty($result) ? [] : $result
         ], 200);
     }
 
