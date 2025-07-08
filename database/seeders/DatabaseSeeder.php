@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Module;
 use App\Models\Reimbursement;
+use App\Models\ReimbursementStatus;
 use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $roleID = $this->createRole();
         $this->createDefaultUser($roleID);
         $this->createDefaultModules();
+        $this->createStatuses();
     }
 
     //===================================================================================================
@@ -105,6 +107,20 @@ class DatabaseSeeder extends Seeder
 
         // insert modules
         Module::insert($modules);
+    }
+
+    //===================================================================================================
+
+    private function createStatuses(): void
+    {
+        $statuses = [
+            ['name' => 'Pengajuan', 'action' => 'diajukan', 'template' => 'Pengajuan reimbursement {$name} sudah {$action} oleh {$owner}.'],
+            ['name' => 'Revisi', 'action' => 'direvisi', 'template' => 'Pengajuan reimbursement {$name} dikembalikan dan harus {$action} oleh {$owner}.'],
+            ['name' => 'Disetujui', 'action' => 'disetujui', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
+            ['name' => 'Ditolak', 'action' => 'ditolak', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
+        ];
+
+        ReimbursementStatus::insert($statuses);
     }
 
     //===================================================================================================
