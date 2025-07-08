@@ -36,8 +36,8 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
             Route::post('/create', [RoleController::class, 'create'])->name('role.create');
             Route::patch('/update', [RoleController::class, 'update'])->name('role.update');
             Route::delete('/delete', [RoleController::class, 'delete'])->name('role.delete');
-            Route::post('/update-modules', [RoleController::class, 'create'])->name('role.update.modules');
-            Route::post('/update-roles', [RoleController::class, 'create'])->name('role.update.menus');
+            Route::post('/update-module', [RoleController::class, 'updateModules'])->name('role.update.modules');
+            Route::post('/update-menu', [RoleController::class, 'updateMenus'])->name('role.update.menus');
         });
 
         // user

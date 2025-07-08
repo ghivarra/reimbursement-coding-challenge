@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Library\FilterLibrary;
 use App\Models\Role;
+use App\Models\RoleMenuList;
+use App\Models\RoleModuleList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -176,7 +178,7 @@ class RoleController extends Controller
         
         if (empty($role))
         {
-             return response()->json([
+            return response()->json([
                 'status'  => 'error',
                 'message' => 'Permintaan gagal diproses',
                 'errors'  => [
@@ -213,6 +215,114 @@ class RoleController extends Controller
             'status'  => 'success',
             'message' => 'Data berhasil diperbaharui',
             'data'    => $role,
+        ], 200);
+    }
+
+    //====================================================================================================
+
+    public function updateModules(Request $request): JsonResponse
+    {
+        // get input query
+        $validator = Validator::make($request->all(), [
+            'id'        => ['required', 'exists:roles,id'],
+            'modules.*' => ['exists:modules,id'],
+        ], [
+            'exists' => 'Modul yang diinput tidak valid'
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
+
+        // remove old
+        RoleModuleList::where('role_id', $input['id'])->delete();
+
+        // input only if not empty
+        if (!empty($input['modules']))
+        {
+            $insertData = [];
+
+            foreach ($input['modules'] as $module):
+
+                array_push($insertData, [
+                    'role_id'   => $input['id'],
+                    'module_id' => $module
+                ]);
+
+            endforeach;
+
+            RoleModuleList::insert($insertData);
+        }
+
+        // role
+        $role = Role::select('name')->find($input['id']);
+
+        // return
+        return response()->json([
+            'status'  => 'success',
+            'message' => "Akses modul untuk role {$role->name} berhasil diperbaharui",
+        ], 200);
+    }
+    
+    //====================================================================================================
+
+    public function updateMenus(Request $request): JsonResponse
+    {
+        // get input query
+        $validator = Validator::make($request->all(), [
+            'id'      => ['required', 'exists:roles,id'],
+            'menus.*' => ['exists:menus,id'],
+        ], [
+            'exists' => 'Menu yang diinput tidak valid'
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
+
+        // remove old
+        RoleMenuList::where('role_id', $input['id'])->delete();
+
+        // input only if not empty
+        if (!empty($input['menus']))
+        {
+            $insertData = [];
+
+            foreach ($input['menus'] as $menu):
+
+                array_push($insertData, [
+                    'role_id'   => $input['id'],
+                    'menu_id' => $menu
+                ]);
+
+            endforeach;
+
+            RoleMenuList::insert($insertData);
+        }
+
+        // role
+        $role = Role::select('name')->find($input['id']);
+
+        // return
+        return response()->json([
+            'status'  => 'success',
+            'message' => "Akses menu untuk role {$role->name} berhasil diperbaharui",
         ], 200);
     }
 
