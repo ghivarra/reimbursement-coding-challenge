@@ -13,11 +13,23 @@ class RoleController extends Controller
 {
     public function create(Request $request): JsonResponse
     {
-        // input
-        $input = $request->validate([
-            'name'          => ['unique:roles,name', 'max:100', 'alpha_dash'],
-            'is_superadmin' => ['numeric', 'in:0,1'],
+        // get input query
+        $validator = Validator::make($request->all(), [
+            'name'          => ['required', 'unique:roles,name', 'max:100', 'alpha_dash'],
+            'is_superadmin' => ['required', 'numeric', 'in:0,1'],
         ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
 
         // create
         $role = new Role;
@@ -55,6 +67,9 @@ class RoleController extends Controller
             ], 422);
         }
 
+        // delete ID
+        $role->delete();
+
         // return
         return response()->json([
             'status'  => 'success',
@@ -66,10 +81,22 @@ class RoleController extends Controller
 
     public function find(Request $request): JsonResponse
     {
-        // input
-        $input = $request->validate([
-            'id' => ['numeric']
+        // get input query
+        $validator = Validator::make($request->all(), [
+            'id' => ['required', 'numeric']
         ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
         
         // get based on roles
         $result = Role::select(['id', 'name', 'is_superadmin'])->find($input['id']);
@@ -160,8 +187,8 @@ class RoleController extends Controller
 
         // get form
         $validator = Validator::make($request->all(), [
-            'name'          => ['alpha_dash', "unique:roles,name,{$id},id", "max:100"],
-            'is_superadmin' => ['in:0,1'],
+            'name'          => ['required', 'alpha_dash', "unique:roles,name,{$id},id", "max:100"],
+            'is_superadmin' => ['required', 'in:0,1'],
         ]);
 
         if ($validator->fails())
