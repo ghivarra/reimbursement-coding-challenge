@@ -20,6 +20,7 @@ return new class extends Migration
             $table->bigInteger('reimbursement_status_id', false, true)->index();
             $table->bigInteger('owner_id', false, true)->index();
             $table->bigInteger('approver_id', false, true)->index()->nullable();
+            $table->timestamps();
 
             // assign foreign key
             $table->foreign('reimbursement_id')->references('id')->on('reimbursements')->cascadeOnDelete()->cascadeOnUpdate();

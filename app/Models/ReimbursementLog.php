@@ -39,7 +39,7 @@ class ReimbursementLog extends Model
      *
      * @var bool
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +52,8 @@ class ReimbursementLog extends Model
         'reimbursement_status_id',
         'owner_id',
         'approver_id',
+        'created_at',
+        'updated_at',
     ];
 
     /**

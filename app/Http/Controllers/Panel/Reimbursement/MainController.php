@@ -284,6 +284,78 @@ class MainController extends Controller
 
     //====================================================================================================
 
+    public function respond(Request $request): JsonResponse
+    {
+        // get status id
+        $allowedStatuses = ReimbursementStatus::whereIn('name', ['Dikembalikan', 'Disetujui', 'Ditolak'])
+                                              ->get();
+
+        $allowedStatuses = empty($allowedStatuses) ? [] : $allowedStatuses->toArray();
+        $statusIDs       = array_column($allowedStatuses, 'id');
+        
+        // get input query
+        $validator = Validator::make($request->all(), [
+            'id'        => ['required', 'exists:reimbursements,id'],
+            'status_id' => ['required', 'in:'.implode(',', $statusIDs)],
+        ]);
+
+        $validator->setAttributeNames([
+            'id'        => 'Pengajuan reimbursement',
+            'status_id' => 'Status pengajuan'
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
+        $notes = $request->input('note');
+
+        // get data
+        $reimbursement = Reimbursement::where('id', $input['id'])->first();
+
+        // pastikan status bukan yang diatas
+        if (in_array($reimbursement->reimbursement_status_id, $statusIDs))
+        {
+            // return
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Anda hanya bisa memberikan respons kepada pengajuan yang statusnya "Diajukan" atau "Revisi". Bisa jadi pihak lain sudah memberikan respons.',
+            ], 403);
+        }
+
+        // set & save
+        $userID = Auth::id();
+        $reimbursement->reimbursement_status_id = $input['status_id'];
+        $reimbursement->approver_id = $userID;
+        // $reimbursement->save();
+
+        // status get
+        $status = array_map(function($item) use ($input) {
+            if (intval($item['id']) === intval($input['status_id']))
+            {
+                return $item;
+            }
+        }, $allowedStatuses);
+
+        // send log
+        ReimbursementLibrary::generateReimbursementLog($status[0], $input['id'], $reimbursement->owner_id, $userID, $notes);
+
+        // return
+        return response()->json([
+            'status'  => 'success',
+            'message' => "Pengajuan berhasil {$status[0]['action']}"
+        ], 200);
+    }
+
+    //====================================================================================================
+
     public function update(Request $request): JsonResponse
     {
         // user id
@@ -458,7 +530,7 @@ class MainController extends Controller
         $reimbursement->save();
 
         // send log
-        ReimbursementLibrary::generateReimbursementLog($status['revisi'], $reimbursement->id, $reimbursement->owner_id, $reimbursement->approver_id, $input['note']);
+        ReimbursementLibrary::generateReimbursementLog($status['revisi'], $reimbursement->id, $reimbursement->owner_id, $reimbursement->approver_id, $request->input('note', ''));
 
         // return
         return response()->json([
