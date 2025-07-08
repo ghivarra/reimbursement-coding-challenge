@@ -59,6 +59,13 @@ class DatabaseSeeder extends Seeder
             ['name' => 'role.create', 'description' => 'Endpoint untuk membuat role.'],
             ['name' => 'role.update', 'description' => 'Endpoint untuk memperbaharui data role.'],
             ['name' => 'role.delete', 'description' => 'Endpoint untuk menghapus role.'],
+
+            // users
+            ['name' => 'user.index', 'description' => 'Endpoint untuk mengakses semua data user.'],
+            ['name' => 'user.find', 'description' => 'Endpoint untuk mengakses data satu user.'],
+            ['name' => 'user.create', 'description' => 'Endpoint untuk membuat user.'],
+            ['name' => 'user.update', 'description' => 'Endpoint untuk memperbaharui data user.'],
+            ['name' => 'user.delete', 'description' => 'Endpoint untuk menghapus user.'],
         ];
 
         // insert modules
