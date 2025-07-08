@@ -68,15 +68,15 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
                 // different indexes for different roles
                 Route::prefix('index')->group(function() {
                     Route::post('/with-removed', [MainController::class, 'indexWithRemoved'])->name('reimbursement.main.index.with.removed');
-                    Route::post('/self', [MainController::class, 'indexOwn'])->name('reimbursement.main.index.self');
-                    Route::post('/all', [MainController::class, 'indexAll'])->name('reimbursement.main.index.all');
+                    Route::post('/self', [MainController::class, 'indexSelf'])->name('reimbursement.main.index.self');
+                    Route::post('/approver', [MainController::class, 'indexApprover'])->name('reimbursement.main.index.approver');
                 });
 
                 // different find for different roles
                 Route::prefix('find')->group(function() {
                     Route::get('/with-removed', [MainController::class, 'findWithRemoved'])->name('reimbursement.main.find.with.removed');
-                    Route::get('/self', [MainController::class, 'findOwn'])->name('reimbursement.main.find.self');
-                    Route::get('/all', [MainController::class, 'findAll'])->name('reimbursement.main.find.all');
+                    Route::get('/self', [MainController::class, 'findSelf'])->name('reimbursement.main.find.self');
+                    Route::get('/approver', [MainController::class, 'findApprover'])->name('reimbursement.main.find.approver');
                 });
 
                 Route::post('/create', [MainController::class, 'create'])->name('reimbursement.main.create');
@@ -88,8 +88,8 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
             // different log for different roles
             Route::prefix('log/find')->group(function() {
                 Route::get('/with-removed', [LogController::class, 'findWithRemoved'])->name('reimbursement.log.find.with.removed');
-                Route::get('/self', [LogController::class, 'findOwn'])->name('reimbursement.log.find.self');
-                Route::get('/all', [LogController::class, 'findAll'])->name('reimbursement.log.find.all');
+                Route::get('/self', [LogController::class, 'findSelf'])->name('reimbursement.log.find.self');
+                Route::get('/approver', [LogController::class, 'findApprover'])->name('reimbursement.log.find.approver');
             });
         });
     });

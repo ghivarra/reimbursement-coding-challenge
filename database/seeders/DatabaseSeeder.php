@@ -85,11 +85,11 @@ class DatabaseSeeder extends Seeder
 
             // reimbursement
             ['name' => 'reimbursement.main.index.with.removed', 'description' => 'Mengakses semua data termasuk yang sudah dihapus.'],
-            ['name' => 'reimbursement.main.index.all', 'description' => 'Menarik semua data kecuali yang sudah dihapus'],
+            ['name' => 'reimbursement.main.index.approver', 'description' => 'Menarik semua data approver kecuali yang sudah dihapus'],
             ['name' => 'reimbursement.main.index.self', 'description' => 'Mengakses data buatan sendiri'],
 
             ['name' => 'reimbursement.main.find.with.removed', 'description' => 'Mengakses satu data termasuk yang sudah dihapus.'],
-            ['name' => 'reimbursement.main.find.all', 'description' => 'Menarik semua data kecuali yang sudah dihapus'],
+            ['name' => 'reimbursement.main.find.approver', 'description' => 'Menarik satu data approver kecuali yang sudah dihapus'],
             ['name' => 'reimbursement.main.find.self', 'description' => 'Mengakses data buatan sendiri'],
 
             ['name' => 'reimbursement.main.create', 'description' => 'Membuat reimbursement'], // employee only
@@ -99,7 +99,7 @@ class DatabaseSeeder extends Seeder
 
             // reimbursement logs
             ['name' => 'reimbursement.log.find.with.removed', 'description' => 'Mengakses satu data log dari pengajuan termasuk yang sudah dihapus.'],
-            ['name' => 'reimbursement.log.find.all', 'description' => 'Menarik semua data log dari pengajuan kecuali yang sudah dihapus'],
+            ['name' => 'reimbursement.log.find.approver', 'description' => 'Menarik satu data log approver dari pengajuan kecuali yang sudah dihapus'],
             ['name' => 'reimbursement.log.find.self', 'description' => 'Mengakses data log dari pengajuan buatan sendiri'],
 
         ];

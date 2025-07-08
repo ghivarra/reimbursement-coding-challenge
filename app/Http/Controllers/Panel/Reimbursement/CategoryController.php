@@ -229,7 +229,7 @@ class CategoryController extends Controller
         if (count($query) > 0)
         {
             // init library
-            $filter = CustomLibrary::parseQuery($orm, $query);
+            $orm = CustomLibrary::parseQuery($orm, $query);
         }
 
         // set limit, order, etc

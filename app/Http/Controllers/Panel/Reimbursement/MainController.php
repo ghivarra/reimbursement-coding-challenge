@@ -115,6 +115,7 @@ class MainController extends Controller
         $reimbursement->owner_id = $userID;
         $reimbursement->reimbursement_category_id = $input['category_id'];
         $reimbursement->reimbursement_status_id = $status->id;
+        $reimbursement->description = $description;
 
         // save
         $reimbursement->save();
@@ -175,12 +176,12 @@ class MainController extends Controller
 
     //====================================================================================================
 
-    public function find(Request $request): JsonResponse
+    public function find(Request $request, string $option): JsonResponse
     {
         // input
         // get input query
         $validator = Validator::make($request->all(), [
-            'id' => ['numeric']
+            'id' => ['exists:reimbursements,id']
         ]);
 
         if ($validator->fails())
@@ -194,11 +195,61 @@ class MainController extends Controller
 
         // input
         $input = $validator->validated();
-        
+
         // get based on roles
-        $result = Reimbursement::select(['id', 'name', 'code', 'limit_per_month'])
-                               ->where('id', '=', $input['id'])
-                               ->first();
+        $selectedFields = [
+            'reimbursements.id',
+            'reimbursements.number',
+            'reimbursements.name',
+            'reimbursements.file',
+            'reimbursements.amount',
+            'reimbursements.description',
+            'reimbursements.date',
+            'reimbursements.owner_id',
+            'owners.name as owner_name',
+            'reimbursements.approver_id',
+            'approvers.name as approver_name',
+            'reimbursements.reimbursement_category_id as category_id',
+            'reimbursements_categories.name as category_name',
+            'reimbursements.reimbursement_status_id as status_id',
+            'reimbursements_statuses.name as status_name',
+            'reimbursements.created_at',
+            'reimbursements.updated_at',
+            'reimbursements.deleted_at',
+        ];
+
+        if ($option === 'with-removed')
+        {
+            $orm = Reimbursement::withTrashed()->select($selectedFields);
+
+        } else {
+            
+            $orm = Reimbursement::select($selectedFields);
+        }
+
+        $orm = $orm->join('users as owners', 'reimbursements.owner_id', '=', 'owners.id')
+                   ->leftJoin('users as approvers', 'reimbursements.approver_id', '=', 'approvers.id')
+                   ->join('reimbursements_categories', 'reimbursement_category_id', '=', 'reimbursements_categories.id')
+                   ->join('reimbursements_statuses', 'reimbursement_status_id', '=', 'reimbursements_statuses.id')
+                   ->where('reimbursements.id', '=', $input['id']);
+
+        switch ($option) {
+            case 'approver':
+                $status = ReimbursementStatus::select('id')->where('name', 'Dikembalikan')->first();
+                $orm->whereNot('reimbursement_status_id', $status->id);
+                break;
+
+            case 'self':
+                $orm->where('owner_id', '=', Auth::id());
+                break;
+            
+            default:
+                // default is do nothing
+                break;
+        }
+
+        // get result
+        $result = $orm->get();
 
         // return
         return response()->json([
@@ -206,6 +257,27 @@ class MainController extends Controller
             'message' => 'Data berhasil ditarik',
             'data'    => $result,
         ], 200);
+    }
+
+    //====================================================================================================
+
+    public function findApprover(Request $request): JsonResponse
+    {
+        return $this->find($request, 'approver');
+    }
+
+    //====================================================================================================
+
+    public function findSelf(Request $request): JsonResponse
+    {
+        return $this->find($request, 'self');
+    }
+
+    //====================================================================================================
+
+    public function findWithRemoved(Request $request): JsonResponse
+    {
+        return $this->find($request, 'with-removed');
     }
 
     //====================================================================================================
@@ -224,15 +296,55 @@ class MainController extends Controller
 
     //====================================================================================================
 
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, string $option): JsonResponse
     {
         // columns
         $columns = [
-            'id', 'name', 'date', 'user_id', 'user_name', 'category_id', 'category_name',
+            'reimbursements.id',
+            'reimbursements.number',
+            'reimbursements.name',
+            'reimbursements.file',
+            'reimbursements.amount',
+            'reimbursements.description',
+            'reimbursements.date',
+            'reimbursements.owner_id',
+            'owners.name as owner_name',
+            'reimbursements.approver_id',
+            'approvers.name as approver_name',
+            'reimbursements.reimbursement_category_id as category_id',
+            'reimbursements_categories.name as category_name',
+            'reimbursements.reimbursement_status_id as status_id',
+            'reimbursements_statuses.name as status_name',
+            'reimbursements.created_at',
+            'reimbursements.updated_at',
+            'reimbursements.deleted_at',
         ];
 
         $allowedQuery = [
-            'name', 'code'
+            'created_at',
+            'updated_at',
+            'date',
+            'approver_name',
+            'category_name',
+            'status_name',
+        ];
+
+        $changedQuery = [
+            'id' => 'reimbursements.id',
+            'number' => 'reimbursements.number',
+            'name' => 'reimbursements.name',
+            'file' => 'reimbursements.file',
+            'amount' => 'reimbursements.amount',
+            'description' => 'reimbursements.description',
+            'date' => 'reimbursements.date',
+            'owner_id' => 'reimbursements.owner_id',
+            'owner_name' => 'owners.name',
+            'approver_id' => 'reimbursements.approver_id',
+            'approver_name' => 'approvers.name',
+            'category_id' => 'reimbursements.reimbursement_category_id',
+            'category_name' => 'reimbursements_categories.name',
+            'status_id' => 'reimbursements.reimbursement_status_id',
+            'status_name' => 'reimbursements_statuses.name',
         ];
 
         // get input query
@@ -260,12 +372,39 @@ class MainController extends Controller
         $query = $request->input('query', []);
 
         // orm
-        $orm = Reimbursement::select(...$columns);
+        if ($option === 'with-removed')
+        {
+            $orm = Reimbursement::withTrashed()->select(...$columns);
+
+        } else {
+            
+            $orm = Reimbursement::select(...$columns);
+        }
+
+        $orm = $orm->join('users as owners', 'reimbursements.owner_id', '=', 'owners.id')
+                   ->leftJoin('users as approvers', 'reimbursements.approver_id', '=', 'approvers.id')
+                   ->join('reimbursements_categories', 'reimbursement_category_id', '=', 'reimbursements_categories.id')
+                   ->join('reimbursements_statuses', 'reimbursement_status_id', '=', 'reimbursements_statuses.id');
+
+        switch ($option) {
+            case 'approver':
+                $status = ReimbursementStatus::select('id')->where('name', 'Dikembalikan')->first();
+                $orm->whereNot('reimbursement_status_id', $status->id);
+                break;
+
+            case 'self':
+                $orm->where('reimbursements.owner_id', '=', Auth::id());
+                break;
+            
+            default:
+                // default is do nothing
+                break;
+        }
 
         if (count($query) > 0)
         {
             // init library
-            $filter = CustomLibrary::parseQuery($orm, $query);
+            $orm = CustomLibrary::parseQuery($orm, $query, $changedQuery);
         }
 
         // set limit, order, etc
@@ -280,6 +419,27 @@ class MainController extends Controller
             'message' => 'Data berhasil ditarik',
             'data'    => empty($result) ? [] : $result
         ], 200);
+    }
+
+    //====================================================================================================
+
+    public function indexApprover(Request $request): JsonResponse
+    {
+        return $this->index($request, 'approver');
+    }
+
+    //====================================================================================================
+
+    public function indexSelf(Request $request): JsonResponse
+    {
+        return $this->index($request, 'self');
+    }
+
+    //====================================================================================================
+
+    public function indexWithRemoved(Request $request): JsonResponse
+    {
+        return $this->index($request, 'with-removed');
     }
 
     //====================================================================================================
