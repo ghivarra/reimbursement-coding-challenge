@@ -1,44 +1,33 @@
 <?php
 
+use App\Http\Controllers\CsrfController;
 use App\Http\Controllers\Panel\MenuController;
 use App\Http\Controllers\Panel\ModuleController;
 use App\Http\Controllers\Panel\Reimbursement\CategoryController;
 use App\Http\Controllers\Panel\Reimbursement\LogController;
 use App\Http\Controllers\Panel\Reimbursement\MainController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Http\JsonResponse;
-use App\Http\Middleware\RoleCheck;
+use App\Http\Controllers\Panel\Reimbursement\StatusController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\UserController;
+use App\Http\Middleware\RoleCheck;
+use Illuminate\Support\Facades\Route;
 
 // get csrf
-Route::get('csrf', function(): JsonResponse {
-    return response()->json([
-        'status'  => 'success',
-        'message' => 'berhasil menarik data',
-        'data'    => [
-            'token' => csrf_token(),
-        ],
-    ], 200);
-})->name('panel.csrf');
+Route::get('csrf', [CsrfController::class, 'get'])->name('panel.csrf');
 
+// guarded auth
 Route::middleware(['auth'])->prefix('/panel')->group(function() {    
 
     // Public group
-    Route::get('/reimbursement/status/find-all', function() {
-        return 'OK';
-    });
-
-    Route::get('/reimbursement/category/find-all', function() {
-        return 'OK';
-    });
+    Route::get('/reimbursement/status/find-all', [StatusController::class, 'findAll'])->name('reimbursement.status.find.all');
+    Route::get('/reimbursement/category/find-all', [CategoryController::class, 'findAll'])->name('reimbursement.category.find.all');
 
     // Guarded Group
     Route::middleware(RoleCheck::class)->group(function() {
 
         // get all menu / modules
-        Route::get('/modules/find-all', [ModuleController::class, 'findAll'])->name('module.all');
-        Route::get('/menus/find-all', [MenuController::class, 'findAll'])->name('menu.all');
+        Route::get('/modules/find-all', [ModuleController::class, 'findAll'])->name('module.find.all');
+        Route::get('/menus/find-all', [MenuController::class, 'findAll'])->name('menu.find.all');
 
         // roles
         Route::prefix('role')->group(function() {
