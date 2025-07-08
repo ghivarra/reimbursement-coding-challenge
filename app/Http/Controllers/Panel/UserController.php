@@ -141,7 +141,7 @@ class UserController extends Controller
 
         // query
         // format: ['query']['status']
-        $query = $request->input('query');
+        $query = $request->input('query', []);
 
         // orm
         $orm = User::select(...$columns)

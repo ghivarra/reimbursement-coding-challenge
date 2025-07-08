@@ -142,7 +142,7 @@ class RoleController extends Controller
 
         // query
         // format: ['query']['status']
-        $query = $request->input('query');
+        $query = $request->input('query', []);
 
         // orm
         $orm = Role::select(...$columns);
