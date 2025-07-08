@@ -40,33 +40,12 @@ class CategoryController extends Controller
         $month  = $dates[1];
         $userID = Auth::id();
 
-        // get id disetujui
-        $status = ReimbursementStatus::select('id')->where('name', 'Disetujui')->limit(1)->first();
-
-        // get category
-        $cat = ReimbursementCategory::select('limit_per_month')
-                                    ->where('id', $input['category_id'])
-                                    ->limit(1)
-                                    ->first();
-
-        // get sum
-        $sum = Reimbursement::where('user_id', $userID)
-                            ->where('reimbursement_status_id', $status->id)
-                            ->whereMonth('date', $month)
-                            ->sum('amount');
-
-        $sum = intval($sum);
-
         // calculate it
         // and return
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => [
-                'limit'     => $cat->limit_per_month,
-                'current'   => $sum,
-                'available' => $cat->limit_per_month - $sum
-            ],
+            'data'    => CustomLibrary::calculateReimbursementLimit($input['category_id'], $userID, $month),
         ], 200);
     }
 
