@@ -7,7 +7,6 @@ use App\Models\ReimbursementCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
 use App\Library\FilterLibrary;
 
 class CategoryController extends Controller
@@ -16,7 +15,7 @@ class CategoryController extends Controller
     {
         // get input query
         $validator = Validator::make($request->all(), [
-            'name'            => ['required', 'unique:reimbursements_categories,code', 'max:100'],
+            'name'            => ['required', 'max:100'],
             'code'            => ['required', 'unique:reimbursements_categories,code', 'max:4'],
             'limit_per_month' => ['required', 'numeric'],
         ]);
@@ -52,7 +51,7 @@ class CategoryController extends Controller
     public function delete(Request $request): JsonResponse
     {
         // find
-        $id   = $request->input('id');
+        $id  = $request->input('id');
         $cat = ReimbursementCategory::find($id);
         
         if (empty($cat))
@@ -72,7 +71,7 @@ class CategoryController extends Controller
         // return
         return response()->json([
             'status'  => 'success',
-            'message' => "User {$cat->name} berhasil dihapus",
+            'message' => "Kategori {$cat->name} berhasil dihapus",
         ], 200);
     }
 
@@ -193,19 +192,13 @@ class CategoryController extends Controller
 
         // set rules
         $rules = [
-            'name'     => ['required', 'max:100'],
-            'email'    => ['required', 'email', "unique:reimbursements_categories,email,{$id},id"],
-            'role_id'  => ['required', 'exists:roles,id'],
+            'id'              => ['required'],
+            'name'            => ['required', 'max:100'],
+            'code'            => ['required', "unique:reimbursements_categories,code,{$id},id", 'max:4'],
+            'limit_per_month' => ['required', 'numeric'],
         ];
 
-        // check if password is supplied, but optional
-        $password = $request->input('password', null);
-        if (!is_null($password))
-        {
-            $rules['password'] = ['required', 'confirmed', Password::min(10)->letters()->mixedCase()->numbers()->symbols()];
-        }
-
-        // get form
+         // get input query
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails())
@@ -219,18 +212,11 @@ class CategoryController extends Controller
 
         // input
         $input = $validator->validated();
-        
+
         // create
         $cat->name = $input['name'];
-        $cat->email = $input['email'];
-        $cat->role_id = $input['role_id'];
-
-        if (!is_null($password))
-        {
-            $cat->password = $input['password'];
-        }
-
-        // save
+        $cat->code = $input['code'];
+        $cat->limit_per_month = $input['limit_per_month'];
         $cat->save();
 
         // return
