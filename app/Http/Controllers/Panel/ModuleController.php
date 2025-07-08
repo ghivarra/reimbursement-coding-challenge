@@ -11,7 +11,7 @@ class ModuleController extends Controller
 {
     public function findAll(): JsonResponse
     {
-        $data = Module::all();
+        $data = Module::orderBy('name', 'asc')->get();
 
         // return
         return response()->json([

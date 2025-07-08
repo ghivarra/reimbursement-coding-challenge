@@ -11,7 +11,7 @@ class MenuController extends Controller
 {
     public function findAll(): JsonResponse
     {
-        $data = Menu::all();
+        $data = Menu::orderBy('sort_order', 'asc')->get();
 
         // return
         return response()->json([

@@ -91,10 +91,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'reimbursement.main.find.all', 'description' => 'Menarik semua data kecuali yang sudah dihapus'],
             ['name' => 'reimbursement.main.find.self', 'description' => 'Mengakses data buatan sendiri'],
 
-            ['name' => 'reimbursement.main.create', 'description' => ''], // employee only
-            ['name' => 'reimbursement.main.update', 'description' => ''], // employee only
-            ['name' => 'reimbursement.main.delete', 'description' => ''], // employee only
-            ['name' => 'reimbursement.main.respond', 'description' => ''], // manager
+            ['name' => 'reimbursement.main.create', 'description' => 'Membuat reimbursement'], // employee only
+            ['name' => 'reimbursement.main.update', 'description' => 'Merevisi reimbursement'], // employee only
+            ['name' => 'reimbursement.main.delete', 'description' => 'Menghapus reimbursement'], // employee only
+            ['name' => 'reimbursement.main.respond', 'description' => 'Memberikan respon penerimaan atau penolakan terhadap reimbursement'], // manager
 
             // reimbursement logs
             ['name' => 'reimbursement.log.find.with.removed', 'description' => 'Mengakses satu data log dari pengajuan termasuk yang sudah dihapus.'],
