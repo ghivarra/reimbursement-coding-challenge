@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name', 255);
             $table->string('file', 255);
             $table->integer('amount', false, true)->default(0);
+            $table->text('description')->nullable();
             $table->date('date');
             $table->bigInteger('user_id', false, true)->index();
             $table->bigInteger('reimbursement_status_id', false, true)->index();

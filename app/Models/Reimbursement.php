@@ -54,6 +54,7 @@ class Reimbursement extends Model
         'number',
         'name',
         'file',
+        'description',
         'amount',
         'date',
         'user_id',

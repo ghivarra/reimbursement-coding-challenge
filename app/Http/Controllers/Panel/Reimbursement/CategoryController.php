@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel\Reimbursement;
 
 use App\Http\Controllers\Controller;
 use App\Library\CustomLibrary;
+use App\Library\ReimbursementLibrary;
 use App\Models\ReimbursementCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -48,7 +49,7 @@ class CategoryController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => CustomLibrary::calculateReimbursementLimit($input['category_id'], $userID, $month),
+            'data'    => ReimbursementLibrary::calculateReimbursementLimit($input['category_id'], $userID, $month),
         ], 200);
     }
 

@@ -18,12 +18,14 @@ return new class extends Migration
             $table->string('content', 500);
             $table->uuid('reimbursement_id')->index();
             $table->bigInteger('reimbursement_status_id', false, true)->index();
-            $table->bigInteger('user_id', false, true)->index();
+            $table->bigInteger('owner_id', false, true)->index();
+            $table->bigInteger('approver_id', false, true)->index()->nullable();
 
             // assign foreign key
             $table->foreign('reimbursement_id')->references('id')->on('reimbursements')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('reimbursement_status_id')->references('id')->on('reimbursements_statuses')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('owner_id')->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreign('approver_id')->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -36,7 +38,8 @@ return new class extends Migration
         Schema::table($this->tableName, function(Blueprint $table) {
             $table->dropForeign("{$this->tableName}_reimbursement_id_foreign");
             $table->dropForeign("{$this->tableName}_reimbursement_status_id_foreign");
-            $table->dropForeign("{$this->tableName}_user_id_foreign");
+            $table->dropForeign("{$this->tableName}_owner_id_foreign");
+            $table->dropForeign("{$this->tableName}_approver_id_foreign");
         });
 
         Schema::dropIfExists($this->tableName);

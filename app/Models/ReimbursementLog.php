@@ -50,7 +50,8 @@ class ReimbursementLog extends Model
         'content',
         'reimbursement_id',
         'reimbursement_status_id',
-        'user_id',
+        'owner_id',
+        'approver_id',
     ];
 
     /**

@@ -2,9 +2,6 @@
 
 namespace App\Library;
 
-use App\Models\Reimbursement;
-use App\Models\ReimbursementCategory;
-use App\Models\ReimbursementStatus;
 use Illuminate\Database\Eloquent\Builder;
 use NumberFormatter;
 
@@ -61,48 +58,6 @@ class CustomLibrary
 
         // return
         return $orm;
-    }
-
-    //==============================================================================================
-
-    /**
-     * Melakukan kalkulasi limit reimburse
-     * 
-     * @param int|string $categoryID
-     * @param int|string $userID
-     * @param int|string $date
-     * 
-     * @return array ['limit' => 0, 'current' => 0, 'available' => 0]
-     */
-    public static function calculateReimbursementLimit(int|string $categoryID, int|string $userID, string $date): array
-    {
-        // parse date
-        $dates = explode('-', $date);
-
-        // get id disetujui
-        $status = ReimbursementStatus::select('id')->where('name', 'Disetujui')->limit(1)->first();
-
-        // get category
-        $cat = ReimbursementCategory::select('limit_per_month')
-                                    ->where('id', $categoryID)
-                                    ->limit(1)
-                                    ->first();
-
-        // get sum
-        $sum = Reimbursement::where('user_id', $userID)
-                            ->where('reimbursement_status_id', $status->id)
-                            ->whereYear('date', $dates[0])
-                            ->whereMonth('date', $dates[1])
-                            ->sum('amount');
-
-        $sum = intval($sum);
-
-        // return
-        return [
-            'limit'     => $cat->limit_per_month,
-            'current'   => $sum,
-            'available' => $cat->limit_per_month - $sum
-        ];
     }
 
     //==============================================================================================

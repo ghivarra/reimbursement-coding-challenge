@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel\Reimbursement;
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateReimbursementNumber;
 use App\Library\CustomLibrary;
+use App\Library\ReimbursementLibrary;
 use App\Models\Reimbursement;
 use App\Models\ReimbursementCategory;
 use App\Models\ReimbursementStatus;
@@ -55,7 +56,11 @@ class MainController extends Controller
         $input = $validator->validated();
 
         // check limit
-        $calculation = CustomLibrary::calculateReimbursementLimit($input['category_id'], $userID, $input['date']);
+        $calculation = ReimbursementLibrary::calculateReimbursementLimit(
+            $input['category_id'], 
+            $userID, 
+            $input['date'],
+        );
 
         if ($calculation['available'] < $input['amount'])
         {
@@ -71,13 +76,13 @@ class MainController extends Controller
             // return error
             return response()->json([
                 'status'  => 'error',
-                'message' => "Total nilai reimbursement yang anda masukkan melebihi kalkulasi batas anggaran reimbursement bulan {$month} untuk kategori {$cat->name}. Anda sudah melakukan reimbursement pada bulan {$month} sejumlah {$total} dari limit {$limit}.",
+                'message' => "Total nilai reimbursement melebihi kalkulasi batas anggaran reimbursement bulan {$month} untuk kategori {$cat->name}. Anda sudah mengajukan reimbursement pada bulan {$month} sejumlah {$total} dari maksimal limit {$limit}.",
                 'errors'  => $validator->errors()
             ], 422);
         }
 
         // get status diajukan
-        $status = ReimbursementStatus::select('id')->where('name', 'Diajukan')->first();
+        $status = ReimbursementStatus::select('id', 'template')->where('name', 'Diajukan')->first();
 
         // upload file
         $uploadFile = $request->file('file');
@@ -109,6 +114,9 @@ class MainController extends Controller
 
         // dispatch queue worker
         GenerateReimbursementNumber::dispatch($reimbursement->id, $reimbursement->reimbursement_category_id, $reimbursement->date);
+
+        // create log
+        ReimbursementLibrary::generateReimbursementLog($status, $reimbursement->id, $userID);
 
         // return
         return response()->json([
@@ -195,7 +203,14 @@ class MainController extends Controller
         ], 200);
     }
 
-    //=============================================================================================
+    //====================================================================================================
+
+    public function generateLog(): void
+    {
+
+    }
+
+    //====================================================================================================
 
     public function index(Request $request): JsonResponse
     {
@@ -259,31 +274,29 @@ class MainController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        // find
-        $id   = $request->input('id');
-        $reimbursement = Reimbursement::find($id);
-        
-        if (empty($reimbursement))
-        {
-             return response()->json([
-                'status'  => 'error',
-                'message' => 'Permintaan gagal diproses',
-                'errors'  => [
-                    'Data tidak ditemukan'
-                ],
-            ], 422);
-        }
+        // user id
+        $userID = Auth::id();
 
-        // set rules
+        // rules
         $rules = [
-            'id'              => ['required'],
-            'name'            => ['required', 'max:100'],
-            'code'            => ['required', "unique:reimbursements_categories,code,{$id},id", 'max:4'],
-            'limit_per_month' => ['required', 'numeric'],
+            'name'        => ['required', 'max:200'],
+            'amount'      => ['required', 'numeric', 'min:0'],
+            'date'        => ['required', 'date', 'date_format:Y-m-d'],
+            'user_id'     => ['required', 'exists:users,id'],
+            'category_id' => ['required', 'exists:reimbursements_categories,id'],
+            'file'        => ['required', 'mimetypes:image/jpg,image/jpeg,application/pdf', 'max:2000'],
         ];
 
-         // get input query
+        // get input query
         $validator = Validator::make($request->all(), $rules);
+        $validator->setAttributeNames([
+            'name'        => 'Nama Pengajuan',
+            'amount'      => 'Jumlah Pengajuan',
+            'date'        => 'Tanggal',
+            'user_id'     => 'User',
+            'category_id' => 'Kategori Reimbursement',
+            'file'        => 'Berkas',
+        ]);
 
         if ($validator->fails())
         {
@@ -297,16 +310,60 @@ class MainController extends Controller
         // input
         $input = $validator->validated();
 
+        // check limit
+        $calculation = ReimbursementLibrary::calculateReimbursementLimit($input['category_id'], $userID, $input['date']);
+
+        if ($calculation['available'] < $input['amount'])
+        {
+            // set to 12.00 PM so locale inconsistency won't affect it
+            $time = "{$input['date']} 12:00:00";
+
+            // get cat name
+            $cat   = ReimbursementCategory::select('name')->where('id', '=', $input['category_id'])->first();
+            $month = CustomLibrary::localTime($time, "MMMM");
+            $total = CustomLibrary::localCurrency($calculation['current']);
+            $limit = CustomLibrary::localCurrency($calculation['limit']);
+
+            // return error
+            return response()->json([
+                'status'  => 'error',
+                'message' => "Total nilai reimbursement yang anda masukkan melebihi kalkulasi batas anggaran reimbursement bulan {$month} untuk kategori {$cat->name}. Anda sudah melakukan reimbursement pada bulan {$month} sejumlah {$total} dari limit {$limit}.",
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // get status diajukan
+        $status = ReimbursementStatus::select('id')->where('name', 'Diajukan')->first();
+
+        // upload file
+        $uploadFile = $request->file('file');
+
+        // directory
+        $dates     = explode('-', $input['date']);
+        $uploadDir = "reimbursements/file/{$dates[0]}/{$dates[1]}";
+
+        // name
+        $extension  = $uploadFile->getClientOriginalExtension();
+        $randomName = Str::random(36) . '.' . $extension;
+
+        // move
+        $uploadFile->storeAs($uploadDir, $randomName);
+
         // create
+        $reimbursement = new Reimbursement();
         $reimbursement->name = $input['name'];
-        $reimbursement->code = $input['code'];
-        $reimbursement->limit_per_month = $input['limit_per_month'];
+        $reimbursement->file = "{$uploadDir}/{$randomName}";
+        $reimbursement->amount = $input['amount'];
+        $reimbursement->date = $input['date'];
+        $reimbursement->reimbursement_category_id = $input['category_id'];
+        $reimbursement->reimbursement_status_id = $status->id;
+
+        // save
         $reimbursement->save();
 
         // return
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Data berhasil diperbaharui',
+            'message' => 'Data berhasil dibuat',
             'data'    => $reimbursement,
         ], 200);
     }
