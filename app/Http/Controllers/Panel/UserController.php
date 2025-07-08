@@ -105,7 +105,8 @@ class UserController extends Controller
         // get based on roles
         $result = User::select(['users.id', 'users.name', 'password', 'role_id', 'roles.name as role_name', 'email'])
                       ->join('roles', 'role_id', '=', 'roles.id')
-                      ->first($input['id']);
+                      ->where('id', '=', $input['id'])
+                      ->first();
 
         // return
         return response()->json([

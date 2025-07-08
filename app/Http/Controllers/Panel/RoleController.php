@@ -110,7 +110,7 @@ class RoleController extends Controller
         $input = $validator->validated();
         
         // get based on roles
-        $result = Role::select(['id', 'name', 'is_superadmin'])->first($input['id']);
+        $result = Role::select(['id', 'name', 'is_superadmin'])->where('id', '=', $input['id'])->first();
 
         // return
         return response()->json([
@@ -287,7 +287,7 @@ class RoleController extends Controller
         }
 
         // role
-        $role = Role::select('name')->first($input['id']);
+        $role = Role::select('name')->where('id', '=', $input['id'])->first();
 
         // return
         return response()->json([
@@ -344,7 +344,7 @@ class RoleController extends Controller
         }
 
         // role
-        $role = Role::select('name')->first($input['id']);
+        $role = Role::select('name')->where('id', '=', $input['id'])->first();
 
         // return
         return response()->json([

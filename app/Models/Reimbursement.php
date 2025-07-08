@@ -28,14 +28,14 @@ class Reimbursement extends Model
      *
      * @var string
      */
-    protected $keyType = 'integer';
+    protected $keyType = 'string';
 
     /**
      * Indicates if the model's ID is auto-incrementing.
      *
      * @var bool
      */
-    public $incrementing = true;
+    public $incrementing = false;
 
     /**
      * Indicates if the model should be timestamped.
@@ -50,6 +50,7 @@ class Reimbursement extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'id',
         'number',
         'name',
         'file',

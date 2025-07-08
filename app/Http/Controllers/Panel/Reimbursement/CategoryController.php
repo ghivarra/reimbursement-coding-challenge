@@ -152,7 +152,8 @@ class CategoryController extends Controller
         
         // get based on roles
         $result = ReimbursementCategory::select(['id', 'name', 'code', 'limit_per_month'])
-                                       ->first($input['id']);
+                                       ->where('id', $input['id'])
+                                       ->first();
 
         // return
         return response()->json([
