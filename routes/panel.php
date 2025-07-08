@@ -9,6 +9,10 @@ use App\Http\Controllers\Panel\Reimbursement\MainController;
 use App\Http\Controllers\Panel\Reimbursement\StatusController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\UserController;
+use App\Http\Controllers\Panel\View\ApplicationController;
+use App\Http\Controllers\Panel\View\ApprovalController;
+use App\Http\Controllers\Panel\View\RoleController as ViewRoleController;
+use App\Http\Controllers\Panel\ViewController;
 use App\Http\Middleware\RoleCheck;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +28,32 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
 
     // Guarded Group
     Route::middleware(RoleCheck::class)->group(function() {
+
+        //========================================= VIEWS ======================================================//
+
+        Route::prefix('approval')->group(function() {
+            Route::get('/', [ApprovalController::class, 'index'])->name('view.approval');
+            Route::get('/examine', [ApprovalController::class, 'examine'])->name('view.approval.examine');
+        });
+
+        Route::prefix('application')->group(function() {
+            Route::get('/', [ApplicationController::class, 'index'])->name('view.application');
+            Route::get('/create', [ApplicationController::class, 'create'])->name('view.application.create');
+            Route::get('/update', [ApplicationController::class, 'update'])->name('view.application.update');
+        });
+
+        Route::prefix('role-view')->group(function() {
+            Route::get('/', [ViewRoleController::class, 'role'])->name('view.role');
+            Route::get('/update-module', [ViewRoleController::class, 'role'])->name('view.role.update.module');
+            Route::get('/update-menu', [ViewRoleController::class, 'role'])->name('view.role.update.menu');
+        });
+
+        Route::get('/archive', [ViewController::class, 'archive'])->name('view.archive');
+        Route::get('/user-view', [ViewController::class, 'user'])->name('view.user');
+
+        
+
+        //========================================= ENDPOINT ======================================================//
 
         // get all menu / modules
         Route::get('/modules/find-all', [ModuleController::class, 'findAll'])->name('module.find.all');

@@ -1,5 +1,10 @@
-import { LayoutGrid } from "lucide-vue-next"
+import { LayoutGrid, ClipboardPenLine, FileText, Archive, UserRoundCog, ShieldCheckIcon } from "lucide-vue-next"
 
 export default {
-    LayoutGrid
+    LayoutGrid,
+    ClipboardPenLine,
+    FileText,
+    Archive,
+    UserRoundCog,
+    ShieldCheckIcon
 }
