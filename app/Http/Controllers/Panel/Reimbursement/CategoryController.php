@@ -8,8 +8,6 @@ use App\Models\ReimbursementCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Reimbursement;
-use App\Models\ReimbursementStatus;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
@@ -21,6 +19,11 @@ class CategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'category_id' => ['numeric', 'exists:reimbursements_categories,id'],
             'date'        => ['date', 'date_format:Y-m-d'],
+        ]);
+
+        $validator->setAttributeNames([
+            'category_id' => 'Kategori Reimbursement',
+            'date'       => 'Tanggal',
         ]);
 
         if ($validator->fails())
@@ -58,6 +61,12 @@ class CategoryController extends Controller
             'name'            => ['required', 'max:100'],
             'code'            => ['required', 'unique:reimbursements_categories,code', 'max:4'],
             'limit_per_month' => ['required', 'numeric'],
+        ]);
+
+        $validator->setAttributeNames([
+            'name'            => 'Nama Kategori Reimbursement',
+            'code'            => 'Kode',
+            'limit_per_month' => 'Batas reimbursement per bulan',
         ]);
 
         if ($validator->fails())
@@ -125,6 +134,10 @@ class CategoryController extends Controller
             'id' => ['numeric']
         ]);
 
+        $validator->setAttributeNames([
+            'id' => 'Kategori Reimbursement'
+        ]);
+
         if ($validator->fails())
         {
             return response()->json([
@@ -182,6 +195,14 @@ class CategoryController extends Controller
             'offset'       => ['numeric'],
             'order.column' => ['in:'.implode(',', $allowedQuery)],
             'order.dir'    => ['in:asc,desc'],
+        ]);
+
+        // set attributes
+        $validator->setAttributeNames([
+            'limit'        => 'Limit',
+            'offset'       => 'Offset',
+            'order.column' => 'Order Column',
+            'order.dir'    => 'Order Dir'
         ]);
 
         if ($validator->fails())
@@ -252,6 +273,13 @@ class CategoryController extends Controller
 
          // get input query
         $validator = Validator::make($request->all(), $rules);
+
+        $validator->setAttributeNames([
+            'id'              => 'Kategori Reimbursement',
+            'name'            => 'Nama Kategori Reimbursement',
+            'code'            => 'Kode',
+            'limit_per_month' => 'Batas reimbursement per bulan',
+        ]);
 
         if ($validator->fails())
         {

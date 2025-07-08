@@ -21,6 +21,11 @@ class RoleController extends Controller
             'is_superadmin' => ['required', 'numeric', 'in:0,1'],
         ]);
 
+        $validator->setAttributeNames([
+            'name'          => 'Nama Role',
+            'is_superadmin' => 'Status Superadmin'
+        ]);
+
         if ($validator->fails())
         {
             return response()->json([
@@ -88,6 +93,10 @@ class RoleController extends Controller
             'id' => ['required', 'numeric']
         ]);
 
+        $validator->setAttributeNames([
+            'id' => 'Role',
+        ]);
+
         if ($validator->fails())
         {
             return response()->json([
@@ -126,6 +135,14 @@ class RoleController extends Controller
             'offset'       => ['numeric'],
             'order.column' => ['in:' . implode(',', $columns)],
             'order.dir'    => ['in:asc,desc'],
+        ]);
+
+        // set attributes
+        $validator->setAttributeNames([
+            'limit'        => 'Limit',
+            'offset'       => 'Offset',
+            'order.column' => 'Order Column',
+            'order.dir'    => 'Order Dir'
         ]);
 
         if ($validator->fails())
@@ -192,6 +209,11 @@ class RoleController extends Controller
             'is_superadmin' => ['required', 'in:0,1'],
         ]);
 
+        $validator->setAttributeNames([
+            'name'          => 'Nama Role',
+            'is_superadmin' => 'Status Superadmin'
+        ]);
+
         if ($validator->fails())
         {
             return response()->json([
@@ -225,8 +247,11 @@ class RoleController extends Controller
         $validator = Validator::make($request->all(), [
             'id'        => ['required', 'exists:roles,id'],
             'modules.*' => ['exists:modules,id'],
-        ], [
-            'exists' => 'Modul yang diinput tidak valid'
+        ]);
+
+        $validator->setAttributeNames([
+            'id'        => 'Role',
+            'modules.*' => 'Modul yang dipilih',
         ]);
 
         if ($validator->fails())
@@ -279,8 +304,11 @@ class RoleController extends Controller
         $validator = Validator::make($request->all(), [
             'id'      => ['required', 'exists:roles,id'],
             'menus.*' => ['exists:menus,id'],
-        ], [
-            'exists' => 'Menu yang diinput tidak valid'
+        ]);
+
+        $validator->setAttributeNames([
+            'id'        => 'Role',
+            'modules.*' => 'Modul yang dipilih',
         ]);
 
         if ($validator->fails())

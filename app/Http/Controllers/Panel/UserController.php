@@ -22,6 +22,15 @@ class UserController extends Controller
             'role_id'  => ['required', 'exists:roles,id'],
         ]);
 
+        // set attributes
+        $validator->setAttributeNames([
+            'name'     => 'Nama',
+            'password' => 'Password',
+            'email'    => 'Email',
+            'role_id'  => 'Role'
+        ]);
+
+        // if failed
         if ($validator->fails())
         {
             return response()->json([
@@ -127,6 +136,14 @@ class UserController extends Controller
             'order.dir'    => ['in:asc,desc'],
         ]);
 
+        // set attributes
+        $validator->setAttributeNames([
+            'limit'        => 'Limit',
+            'offset'       => 'Offset',
+            'order.column' => 'Order Column',
+            'order.dir'    => 'Order Dir'
+        ]);
+
         if ($validator->fails())
         {
             return response()->json([
@@ -202,6 +219,14 @@ class UserController extends Controller
 
         // get form
         $validator = Validator::make($request->all(), $rules);
+
+        // set attributes
+        $validator->setAttributeNames([
+            'name'     => 'Nama',
+            'password' => 'Password',
+            'email'    => 'Email',
+            'role_id'  => 'Role'
+        ]);
 
         if ($validator->fails())
         {
