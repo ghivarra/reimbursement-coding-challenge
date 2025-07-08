@@ -71,4 +71,33 @@ class ReimbursementLibrary
     }
 
     //==============================================================================================
+
+    public static function parseLog(array $log): array
+    {
+        // decode content
+        $content = json_decode($log['content'], true);
+
+        // replaced array
+        $srcString = [
+            '{$name}',
+            '{$owner}',
+            '{$approver}',
+            '{$action}',
+        ];
+
+        $repString = [
+            $log['name'],
+            $log['owner_name'],
+            $log['approver_name'],
+            $log['action']
+        ];
+
+        // parse replace
+        $content['content'] = str_ireplace($srcString, $repString, $content['content']);
+
+        // return
+        return $content;
+    }
+
+    //==============================================================================================
 }

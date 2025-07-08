@@ -62,6 +62,6 @@ class ReimbursementLog extends Model
      * @var list<string>
      */
     protected $hidden = [
-
+        
     ];
 }
