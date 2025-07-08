@@ -59,7 +59,7 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
                 Route::post('/create', [CategoryController::class, 'create'])->name('reimbursement.category.create');
                 Route::patch('/update', [CategoryController::class, 'update'])->name('reimbursement.category.update');
                 Route::delete('/delete', [CategoryController::class, 'delete'])->name('reimbursement.category.delete');
-                Route::delete('/check-limit', [CategoryController::class, 'checkLimit'])->name('reimbursement.category.check.limit');
+                Route::get('/check-limit', [CategoryController::class, 'checkLimit'])->name('reimbursement.category.check.limit');
             });
 
             // main

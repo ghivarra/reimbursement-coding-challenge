@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Panel\Reimbursement;
 
 use App\Http\Controllers\Controller;
+use App\Library\CustomLibrary;
 use App\Models\ReimbursementCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Library\FilterLibrary;
+use App\Models\Reimbursement;
 use App\Models\ReimbursementStatus;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,11 +43,31 @@ class CategoryController extends Controller
         // get id disetujui
         $status = ReimbursementStatus::select('id')->where('name', 'Disetujui')->limit(1)->first();
 
-        // get sum
-        // $currentAmount = 
+        // get category
+        $cat = ReimbursementCategory::select('limit_per_month')
+                                    ->where('id', $input['category_id'])
+                                    ->limit(1)
+                                    ->first();
 
-        // check total limit
-        return response()->json([], 200);
+        // get sum
+        $sum = Reimbursement::where('user_id', $userID)
+                            ->where('reimbursement_status_id', $status->id)
+                            ->whereMonth('date', $month)
+                            ->sum('amount');
+
+        $sum = intval($sum);
+
+        // calculate it
+        // and return
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => [
+                'limit'     => $cat->limit_per_month,
+                'current'   => $sum,
+                'available' => $cat->limit_per_month - $sum
+            ],
+        ], 200);
     }
 
     //====================================================================================================
@@ -206,8 +227,7 @@ class CategoryController extends Controller
         if (count($query) > 0)
         {
             // init library
-            $filter = new FilterLibrary();
-            $orm    = $filter->parse($orm, $query);
+            $filter = CustomLibrary::parseQuery($orm, $query);
         }
 
         // set limit, order, etc

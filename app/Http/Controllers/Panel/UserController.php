@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Library\FilterLibrary;
+use App\Library\CustomLibrary;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -150,8 +150,7 @@ class UserController extends Controller
         if (count($query) > 0)
         {
             // init library
-            $filter = new FilterLibrary();
-            $orm    = $filter->parse($orm, $query, ['name' => 'users.name', 'role_name' => 'roles.name']);
+            $orm = CustomLibrary::parseQuery($orm, $query, ['name' => 'users.name', 'role_name' => 'roles.name']);
         }
 
         // set limit, order, etc

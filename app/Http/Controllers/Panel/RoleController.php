@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Library\FilterLibrary;
+use App\Library\CustomLibrary;
 use App\Models\Role;
 use App\Models\RoleMenuList;
 use App\Models\RoleModuleList;
@@ -150,8 +150,7 @@ class RoleController extends Controller
         if (count($query) > 0)
         {
             // init library
-            $filter = new FilterLibrary();
-            $orm    = $filter->parse($orm, $query);
+            $orm = CustomLibrary::parseQuery($orm, $query);
         }
 
         // set limit, order, etc

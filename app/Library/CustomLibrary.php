@@ -4,7 +4,7 @@ namespace App\Library;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class FilterLibrary
+class CustomLibrary
 {
     /**
      * Melakukan parsing terhadap filter yang direquest dari frontend
@@ -13,7 +13,7 @@ class FilterLibrary
      * @param array $queries
      * @return Builder $orm
      */
-    public function parse(Builder $orm, array $queries, array $switchParams = []): Builder
+    public static function parseQuery(Builder $orm, array $queries, array $switchParams = []): Builder
     {
         foreach ($queries as $query):
 
