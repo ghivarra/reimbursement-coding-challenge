@@ -33,7 +33,7 @@ class ReimbursementLibrary
                                     ->first();
 
         // get sum
-        $sum = Reimbursement::where('user_id', $userID)
+        $sum = Reimbursement::where('owner_id', $userID)
                             ->whereIn('reimbursement_status_id', array_column($status->toArray(), 'id'))
                             ->whereYear('date', $dates[0])
                             ->whereMonth('date', $dates[1])
@@ -51,19 +51,20 @@ class ReimbursementLibrary
 
     //==============================================================================================
 
-    public static function generateReimbursementLog(ReimbursementStatus $status, string|int $reimbursementID, string|int $ownerID, string|int|null $approverID = null): void
+    public static function generateReimbursementLog(ReimbursementStatus|array $status, string|int $reimbursementID, string|int $ownerID, string|int|null $approverID = null, string|null $note = null): void
     {
         // set log
         $logs = [
-            'content' => $status->template,
+            'content' => is_array($status) ? $status['template'] : $status->template,
             'time'    => date('c'),
+            'note'    => $note,
         ];
 
         // update logs
         $log = new ReimbursementLog;
         $log->content = json_encode($logs);
         $log->reimbursement_id = $reimbursementID;
-        $log->reimbursement_status_id = $status->id;
+        $log->reimbursement_status_id = is_array($status) ? $status['id'] : $status->id;
         $log->owner_id = $ownerID;
         $log->approver_id = $approverID;
         $log->save();

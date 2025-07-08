@@ -27,10 +27,17 @@ class MainController extends Controller
             'name'        => ['required', 'max:200'],
             'amount'      => ['required', 'numeric', 'min:0'],
             'date'        => ['required', 'date', 'date_format:Y-m-d'],
-            'user_id'     => ['required', 'exists:users,id'],
             'category_id' => ['required', 'exists:reimbursements_categories,id'],
             'file'        => ['required', 'mimetypes:image/jpg,image/jpeg,application/pdf', 'max:2000'],
         ];
+
+        // description
+        $description = $request->input('description');
+
+        if (!empty($description))
+        {
+            $rules['description'] = ['string'];
+        }
 
         // get input query
         $validator = Validator::make($request->all(), $rules);
@@ -38,9 +45,9 @@ class MainController extends Controller
             'name'        => 'Nama Pengajuan',
             'amount'      => 'Jumlah Pengajuan',
             'date'        => 'Tanggal',
-            'user_id'     => 'User',
             'category_id' => 'Kategori Reimbursement',
             'file'        => 'Berkas',
+            'description' => 'Deskripsi Pengajuan',
         ]);
 
         if ($validator->fails())
@@ -69,14 +76,14 @@ class MainController extends Controller
 
             // get cat name
             $cat   = ReimbursementCategory::select('name')->where('id', '=', $input['category_id'])->first();
-            $month = CustomLibrary::localTime($time, "MMMM");
+            $times = CustomLibrary::localTime($time, "MMMM YYYY");
             $total = CustomLibrary::localCurrency($calculation['current']);
             $limit = CustomLibrary::localCurrency($calculation['limit']);
 
             // return error
             return response()->json([
                 'status'  => 'error',
-                'message' => "Total nilai reimbursement melebihi kalkulasi batas anggaran reimbursement bulan {$month} untuk kategori {$cat->name}. Anda sudah mengajukan reimbursement pada bulan {$month} sejumlah {$total} dari maksimal limit {$limit}.",
+                'message' => "Total nilai reimbursement melebihi kalkulasi batas anggaran reimbursement bulan {$times} untuk kategori {$cat->name}. Anda sudah mengajukan reimbursement pada bulan {$times} sejumlah {$total} dari maksimal limit {$limit}.",
                 'errors'  => $validator->errors()
             ], 422);
         }
@@ -105,7 +112,7 @@ class MainController extends Controller
         $reimbursement->file = "{$uploadDir}/{$randomName}";
         $reimbursement->amount = $input['amount'];
         $reimbursement->date = $input['date'];
-        $reimbursement->user_id = $userID;
+        $reimbursement->owner_id = $userID;
         $reimbursement->reimbursement_category_id = $input['category_id'];
         $reimbursement->reimbursement_status_id = $status->id;
 
@@ -131,8 +138,9 @@ class MainController extends Controller
     {
         // find
         $id  = $request->input('id');
-        $reimbursement = Reimbursement::find($id);
+        $reimbursement = Reimbursement::select('id', 'name', 'owner_id')->where('id', $id)->first();
         
+        // if empty
         if (empty($reimbursement))
         {
             return response()->json([
@@ -142,6 +150,17 @@ class MainController extends Controller
                     'Data tidak ditemukan'
                 ],
             ], 422);
+        }
+
+        // only the owner can delete
+        $userID = Auth::id();
+
+        if (intval($reimbursement['owner_id']) !== $userID)
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Hanya pemilik atau yang mengajukan reimbursement yang bisa menghapus',
+            ], 403);
         }
 
         // delete
@@ -205,18 +224,11 @@ class MainController extends Controller
 
     //====================================================================================================
 
-    public function generateLog(): void
-    {
-
-    }
-
-    //====================================================================================================
-
     public function index(Request $request): JsonResponse
     {
         // columns
         $columns = [
-            'id', 'name', 'code', 'limit_per_month'
+            'id', 'name', 'date', 'user_id', 'user_name', 'category_id', 'category_name',
         ];
 
         $allowedQuery = [
@@ -275,27 +287,110 @@ class MainController extends Controller
     public function update(Request $request): JsonResponse
     {
         // user id
-        $userID = Auth::id();
+        $userID        = Auth::id();
+        $reimbursement = Reimbursement::where('id', $request->input('id'))->first();
+
+        // get status diajukan
+        $statuses = ReimbursementStatus::select('id', 'name', 'template')
+                                       ->whereIn('name', ['Revisi', 'Dikembalikan'])
+                                       ->get();
+
+        if (!empty($statuses))
+        {
+            $statuses = $statuses->toArray();
+        }
+
+        $status = [];
+
+        foreach ($statuses as $item):
+
+            if ($item['name'] === 'Revisi')
+            {
+                $status['revisi'] = $item;
+
+            } elseif ($item['name'] === 'Dikembalikan') {
+
+                $status['dikembalikan'] = $item;
+            }
+            
+        endforeach;
+
+        // checking first
+        if (empty($reimbursement))
+        {
+            // return
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Pengajuan tidak ditemukan',
+            ], 404);
+        }
+
+        if ($userID !== intval($reimbursement->owner_id))
+        {
+            // return
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk merevisi pengajuan ini',
+            ], 403);
+        }
+        
+        if (intval($reimbursement->reimbursement_status_id) !== intval($status['dikembalikan']['id']))
+        {
+            // return
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Anda tidak bisa merevisi permohonan ini karena permohonan ini sudah dikirim/diajukan',
+            ], 403);
+        }
 
         // rules
         $rules = [
+            'id'          => ['required', 'exists:reimbursements,id'],
             'name'        => ['required', 'max:200'],
             'amount'      => ['required', 'numeric', 'min:0'],
             'date'        => ['required', 'date', 'date_format:Y-m-d'],
-            'user_id'     => ['required', 'exists:users,id'],
-            'category_id' => ['required', 'exists:reimbursements_categories,id'],
-            'file'        => ['required', 'mimetypes:image/jpg,image/jpeg,application/pdf', 'max:2000'],
+            'category_id' => ['required', 'exists:reimbursements_categories,id']
         ];
+
+        // file & note optional
+        $optional = [
+            'file' => ['required', 'mimetypes:image/jpg,image/jpeg,application/pdf', 'max:2000'],
+            'note' => ['required', 'max:200'],
+        ];
+
+        foreach ($optional as $key => $rule):
+
+            if ($key === 'file')
+            {
+                $file = $request->file($key);
+
+                if ($file->isValid())
+                {
+                    $rules[$key] = $rule;
+                }
+
+            } else {
+
+                $item = $request->input($key);
+
+                if (!empty($item))
+                {
+                    $rules[$key] = $rule;
+                }
+            }
+            
+        endforeach;
 
         // get input query
         $validator = Validator::make($request->all(), $rules);
         $validator->setAttributeNames([
+            'id'          => 'ID Pengajuan',
             'name'        => 'Nama Pengajuan',
             'amount'      => 'Jumlah Pengajuan',
             'date'        => 'Tanggal',
-            'user_id'     => 'User',
             'category_id' => 'Kategori Reimbursement',
             'file'        => 'Berkas',
+            'note'        => 'Catatan',
         ]);
 
         if ($validator->fails())
@@ -332,38 +427,42 @@ class MainController extends Controller
             ], 422);
         }
 
-        // get status diajukan
-        $status = ReimbursementStatus::select('id')->where('name', 'Diajukan')->first();
+        // update
+        $reimbursement->name = $input['name'];
+        $reimbursement->amount = $input['amount'];
+        $reimbursement->date = $input['date'];
+        $reimbursement->reimbursement_category_id = $input['category_id'];
+        $reimbursement->reimbursement_status_id = $status['revisi']['id'];
 
         // upload file
         $uploadFile = $request->file('file');
 
-        // directory
-        $dates     = explode('-', $input['date']);
-        $uploadDir = "reimbursements/file/{$dates[0]}/{$dates[1]}";
+        if ($uploadFile->isValid())
+        {
+            // directory
+            $dates     = explode('-', $input['date']);
+            $uploadDir = "reimbursements/file/{$dates[0]}/{$dates[1]}";
+    
+            // name
+            $extension  = $uploadFile->getClientOriginalExtension();
+            $randomName = Str::random(36) . '.' . $extension;
+    
+            // move
+            $uploadFile->storeAs($uploadDir, $randomName);
 
-        // name
-        $extension  = $uploadFile->getClientOriginalExtension();
-        $randomName = Str::random(36) . '.' . $extension;
-
-        // move
-        $uploadFile->storeAs($uploadDir, $randomName);
-
-        // create
-        $reimbursement = new Reimbursement();
-        $reimbursement->name = $input['name'];
-        $reimbursement->file = "{$uploadDir}/{$randomName}";
-        $reimbursement->amount = $input['amount'];
-        $reimbursement->date = $input['date'];
-        $reimbursement->reimbursement_category_id = $input['category_id'];
-        $reimbursement->reimbursement_status_id = $status->id;
+            // create
+            $reimbursement->file = "{$uploadDir}/{$randomName}";
+        }
 
         // save
         $reimbursement->save();
 
+        // send log
+        ReimbursementLibrary::generateReimbursementLog($status['revisi'], $reimbursement->id, $reimbursement->owner_id, $reimbursement->approver_id, $input['note']);
+
         // return
         return response()->json([
-            'message' => 'Data berhasil dibuat',
+            'message' => 'Data berhasil diperbaharui',
             'data'    => $reimbursement,
         ], 200);
     }

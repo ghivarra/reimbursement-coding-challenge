@@ -192,6 +192,8 @@ class UserController extends Controller
         // find
         $id   = $request->input('id');
         $user = User::find($id);
+
+        dd($id);
         
         if (empty($user))
         {

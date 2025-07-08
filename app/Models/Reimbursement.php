@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Reimbursement extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasUuids;
 
     /**
      * The table associated with the model.
@@ -57,7 +58,8 @@ class Reimbursement extends Model
         'description',
         'amount',
         'date',
-        'user_id',
+        'owner_id',
+        'approver_id',
         'reimbursement_status_id',
         'reimbursement_category_id'
     ];

@@ -21,14 +21,16 @@ return new class extends Migration
             $table->integer('amount', false, true)->default(0);
             $table->text('description')->nullable();
             $table->date('date');
-            $table->bigInteger('user_id', false, true)->index();
+            $table->bigInteger('owner_id', false, true)->index();
+            $table->bigInteger('approver_id', false, true)->index()->nullable();
             $table->bigInteger('reimbursement_status_id', false, true)->index();
             $table->bigInteger('reimbursement_category_id', false, true)->index();
             $table->timestamps();
             $table->softDeletes();
 
             // assign foreign key
-            $table->foreign('user_id')->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreign('owner_id')->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreign('approver_id')->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreign('reimbursement_status_id')->references('id')->on('reimbursements_statuses')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreign('reimbursement_category_id')->references('id')->on('reimbursements_categories')->restrictOnDelete()->cascadeOnUpdate();
         });
@@ -41,7 +43,8 @@ return new class extends Migration
     {
         // altering index and foreign keys
         Schema::table($this->tableName, function(Blueprint $table) {
-            $table->dropForeign("{$this->tableName}_user_id_foreign");
+            $table->dropForeign("{$this->tableName}_owner_id_foreign");
+            $table->dropForeign("{$this->tableName}_approver_id_foreign");
             $table->dropForeign("{$this->tableName}_reimbursement_status_id_foreign");
             $table->dropForeign("{$this->tableName}_reimbursement_category_id_foreign");
         });
