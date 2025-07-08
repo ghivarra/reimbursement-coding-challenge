@@ -102,7 +102,7 @@ class UserController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => empty($result) ? [] : $result,
+            'data'    => $result,
         ], 200);
     }
 
