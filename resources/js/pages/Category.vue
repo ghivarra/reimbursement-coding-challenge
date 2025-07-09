@@ -1,5 +1,5 @@
 <template>
-    <Head title="Application"></Head>
+    <Head title="Kategori Reimbursement"></Head>
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
             <Heading title="Kategori Reimbursement" description="Mencakup pembuatan, modifikasi, dan penghapusan kategori reimbursement" class="mb-0" />

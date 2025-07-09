@@ -1,5 +1,5 @@
 <template>
-    <Badge class="mr-2 mb-2" :class="setColor(props.status)">
+    <Badge class="text-sm" :class="setColor(props.status)">
         {{ props.status }}
     </Badge>
 </template>
@@ -14,6 +14,7 @@ const props = defineProps<{
 }>()
 
 const colors = [
+    {status: 'Dihapus', colorClass: 'bg-fuchsia-700'},
     {status: 'Diajukan', colorClass: 'bg-blue-400'},
     {status: 'Ditolak', colorClass: 'bg-red-400'},
     {status: 'Dikembalikan', colorClass: 'bg-amber-400 text-dark'},

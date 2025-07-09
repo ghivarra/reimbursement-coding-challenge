@@ -15,9 +15,26 @@ use App\Http\Controllers\Panel\View\RoleController as ViewRoleController;
 use App\Http\Controllers\Panel\ViewController;
 use App\Http\Middleware\RoleCheck;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // get csrf
 Route::get('csrf', [CsrfController::class, 'get'])->name('panel.csrf');
+
+// need auth to get image
+Route::get('/assets/reimbursements/file/{year}/{month}/{name}', function(string $year, string $month, string $name) {
+    $fullPath = "reimbursements/file/{$year}/{$month}/{$name}";
+
+    if (!Storage::disk('local')->exists($fullPath))
+    {
+        abort(404, 'File not found');
+    }
+
+    $file = Storage::disk('local')->get($fullPath);
+    $mime = Storage::mimeType($file);
+
+    return response($file)->header('Content-Type', $mime);
+
+})->middleware('auth');
 
 // guarded auth
 Route::middleware(['auth'])->prefix('/panel')->group(function() {    
@@ -31,15 +48,11 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
 
         //========================================= VIEWS ======================================================//
 
-        Route::prefix('approval')->group(function() {
-            Route::get('/', [ApprovalController::class, 'index'])->name('view.approval');
-            Route::get('/examine', [ApprovalController::class, 'examine'])->name('view.approval.examine');
-        });
-
         Route::prefix('application')->group(function() {
             Route::get('/', [ApplicationController::class, 'index'])->name('view.application');
             Route::get('/create', [ApplicationController::class, 'create'])->name('view.application.create');
             Route::get('/update', [ApplicationController::class, 'update'])->name('view.application.update');
+            Route::get('/examine/{id}', [ApplicationController::class, 'examine'])->name('view.application.examine');
         });
 
         Route::prefix('role-view')->group(function() {
@@ -48,6 +61,7 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
             Route::get('/update-menu', [ViewRoleController::class, 'role'])->name('view.role.update.menu');
         });
 
+        Route::get('/approval', [ApprovalController::class, 'index'])->name('view.approval');
         Route::get('/archive', [ViewController::class, 'archive'])->name('view.archive');
         Route::get('/category', [ViewController::class, 'category'])->name('view.category');
         Route::get('/user-view', [ViewController::class, 'user'])->name('view.user');

@@ -45,4 +45,21 @@ function padNumber(num: number, size: number): string {
     return numStr;
 }
 
-export { buildMenu, hasAccess, formatCurrency, padNumber }
+const formatDateTime = (time: string): string  => {
+    // convert to UTC
+    // 2025-01-05 23:11:06 become 2025-01-05T23:11:06+00:00
+    const utcTime = time.includes('T') ? time : time.replace(' ', 'T') + '+00:00';
+    const dateObj = new Date(utcTime)
+
+    return dateObj.toLocaleString('id-ID', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short'
+    })
+}
+
+export { buildMenu, hasAccess, formatCurrency, padNumber, formatDateTime }

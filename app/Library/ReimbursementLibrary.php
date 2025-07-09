@@ -94,7 +94,9 @@ class ReimbursementLibrary
         ];
 
         // parse replace
-        $content['content'] = str_ireplace($srcString, $repString, $content['content']);
+        $content['content']     = str_ireplace($srcString, $repString, $content['content']);
+        $content['status_name'] = $log['status_name'];
+        // $content['status_id']   =
 
         // return
         return $content;

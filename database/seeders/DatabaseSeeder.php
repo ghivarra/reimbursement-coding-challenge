@@ -114,9 +114,9 @@ class DatabaseSeeder extends Seeder
 
             // views
             ['name' => 'view.approval', 'description' => 'Mengakses halaman persetujuan/approval'],
-            ['name' => 'view.approval.examine', 'description' => 'Mengakses halaman pengecekan pengajuan reimbursement'],
             ['name' => 'view.application', 'description' => 'Mengakses halaman pengajuan reimbursement'],
             ['name' => 'view.application.create', 'description' => 'Mengakses halaman pembuatan reimbursement'],
+            ['name' => 'view.application.examine', 'description' => 'Mengakses halaman pengecekan pengajuan reimbursement'],
             ['name' => 'view.application.update', 'description' => 'Mengakses halaman revisi reimbursement'],
             ['name' => 'view.role', 'description' => 'Mengakses halaman manajemen akses/role'],
             ['name' => 'view.role.update.module', 'description' => 'Mengakses halaman update modul manajemen akses/role'],
@@ -231,6 +231,7 @@ class DatabaseSeeder extends Seeder
                     'reimbursement.main.find.with.removed',
                     'reimbursement.log.find.with.removed',
                     'view.application',
+                    'view.application.examine',
                     'view.role',
                     'view.role.update.module',
                     'view.role.update.menu',
@@ -259,6 +260,7 @@ class DatabaseSeeder extends Seeder
                     'reimbursement.main.delete',
                     'reimbursement.log.find.self',
                     'view.application',
+                    'view.application.examine',
                     'view.application.create',
                     'view.application.update',
                 ];
@@ -279,7 +281,7 @@ class DatabaseSeeder extends Seeder
                     'reimbursement.main.respond',
                     'reimbursement.log.find.approver',
                     'view.approval',
-                    'view.approval.examine',
+                    'view.application.examine',
                     'view.application',
                 ];
 

@@ -1,25 +1,20 @@
 <template>
-    <Head title="Pengajuan"></Head>
+    <Head title="Persetujuan"></Head>
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <Heading title="Pengajuan" description="Pantau perkembangan reimbursement yang sudah diajukan." class="mb-0" />
-            <div v-if="hasCreateAccess" class="mb-4">
-                <Button 
-                    @click.prevent="router.visit(route('view.application.create'))" 
-                    type="button" 
-                    class="cursor-pointer"
-                >
-                    <Icon name="SquarePen" />
-                    Buat Pengajuan
-                </Button>
-            </div>
+            <Heading title="Persetujuan" description="Lihat atau tanggapi pengajuan reimbursement." class="mb-0" />
             <div class="relative max-w-[260px] mb-2">
                 <Input placeholder="Cari Pengajuan..." />
                 <Icon class="absolute right-[0.75rem] top-[0.5rem]" name="Search" />
             </div>
             
             <div v-for="(item, key) in reimbursementList" :key="key" class="mb-2">
-                <ReimbursementsListItem :item="item" :allow-delete="hasDeleteAccess" :update-list="getReimbursementList" />
+                <ReimbursementsListItem 
+                    :item="item" 
+                    :allow-delete="hasDeleteAccess" 
+                    :allow-respond="hasRespondAccess"
+                    :update-list="getReimbursementList" 
+                />
             </div>
         </div>
     </AppLayout>
@@ -27,13 +22,12 @@
 
 <script setup lang="ts">
 
-import { Head, router } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 import AppLayout from '@/layouts/AppLayout.vue'
-import { AccessProp, BreadcrumbItem, Reimbursement } from '@/types'
+import { AccessProp, BreadcrumbItem, ReimbursementListItem } from '@/types'
 import { provide, Ref, ref } from 'vue'
 import Icon from '@/components/Icon.vue'
 import Heading from '@/components/Heading.vue'
-import { Button } from '@/components/ui/button'
 import Input from '@/components/ui/input/Input.vue'
 import { hasAccess } from '@/library/common'
 import axios, { AxiosResponse } from 'axios'
@@ -45,13 +39,12 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: route('dashboard'),
     },
     {
-        title: 'Pengajuan',
-        href: route('view.application'),
+        title: 'Persetujuan',
+        href: route('view.approval'),
     },
 ]
 
 const props = defineProps<{
-    endpoint: string,
     csrfHash: string,
     access: AccessProp
 }>()
@@ -61,9 +54,9 @@ provide('access', props.access)
 provide('csrfHash', props.csrfHash)
 
 // const if has access to create
-const hasCreateAccess = hasAccess('view.application.create', props.access.modules)
+const hasRespondAccess = hasAccess('reimbursement.main.respond', props.access.modules) 
 const hasDeleteAccess = hasAccess('reimbursement.main.delete', props.access.modules)
-const reimbursementList: Ref<Reimbursement[]> = ref([])
+const reimbursementList: Ref<ReimbursementListItem[]> = ref([])
 
 // methods
 const getReimbursementList = () => {
@@ -75,7 +68,7 @@ const getReimbursementList = () => {
     formData.append('order[dir]', 'desc')
     formData.append('_token', props.csrfHash)
 
-    axios.post(props.endpoint, formData)
+    axios.post(route('reimbursement.main.index.submitted'), formData)
         .then((response: AxiosResponse) => {
             const res = response.data
             if (res.status === 'success') {

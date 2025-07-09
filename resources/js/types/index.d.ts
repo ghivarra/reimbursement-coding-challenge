@@ -50,7 +50,7 @@ export interface AccessProp {
     modules: AccessModule[]
 }
 
-export interface ReimbursementListItem {
+export interface Reimbursement {
     id: string,
     name: string,
     number: string,

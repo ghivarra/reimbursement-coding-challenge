@@ -63,7 +63,7 @@ class LogController extends Controller
             case 'approver':
                 $orm = $orm->join('reimbursements', function(JoinClause $join) {
                             $join->on('reimbursements_logs.reimbursement_id', '=', 'reimbursements.id')
-                                 ->on('reimbursements.deleted_at', '=', DB::raw('NULL'));
+                                 ->whereNull('reimbursements.deleted_at');
                             });
                 
                 $status = ReimbursementStatus::select('id')->where('name', 'Dikembalikan')->first();
@@ -73,7 +73,7 @@ class LogController extends Controller
             case 'self':
                 $orm = $orm->join('reimbursements', function(JoinClause $join) {
                             $join->on('reimbursements_logs.reimbursement_id', '=', 'reimbursements.id')
-                                 ->on('reimbursements.deleted_at', '=', DB::raw('NULL'));
+                                 ->whereNull('reimbursements.deleted_at');
                             })
                            ->where('reimbursements_logs.owner_id', '=', Auth::id());
                 break;
@@ -84,10 +84,13 @@ class LogController extends Controller
         }
 
         // get result
-        $result = $orm->join('reimbursements_categories', 'reimbursements.reimbursement_category_id', '=', 'reimbursements_categories.id')
-                      ->where('reimbursements_logs.reimbursement_id', '=', $input['id'])
-                      ->orderBy('reimbursements_logs.created_at', 'desc')
-                      ->get();
+        $orm = $orm->join('reimbursements_categories', 'reimbursements.reimbursement_category_id', '=', 'reimbursements_categories.id')
+                   ->where('reimbursements_logs.reimbursement_id', '=', $input['id'])
+                   ->orderBy('reimbursements_logs.created_at', 'desc');
+
+        // $orm->dd();
+
+        $result = $orm->get();
 
         // parse result
         foreach ($result as $i => $resultItem):

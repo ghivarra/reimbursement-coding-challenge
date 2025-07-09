@@ -12,6 +12,7 @@ use App\Models\ReimbursementStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -252,7 +253,13 @@ class MainController extends Controller
         }
 
         // get result
-        $result = $orm->get();
+        $result = $orm->first();
+
+        // set
+        if (!empty($result->name))
+        {
+            $result->file = url('assets/' . $result->file);
+        }
 
         // return
         return response()->json([
@@ -404,8 +411,14 @@ class MainController extends Controller
                 break;
 
             case 'submitted':
-                $statuses = ReimbursementStatus::select('name')->whereIn('name', ['Diajukan', 'Revisi'])->get();
-                $orm->whereIn('reimbursements.reimbursement_status_id', array_column($statuses, 'name'));
+                $statuses = ReimbursementStatus::select('id')->whereIn('name', ['Diajukan', 'Revisi'])->get();
+
+                if (!empty($statuses))
+                {
+                    $statuses = $statuses->toArray();
+                }
+
+                $orm->whereIn('reimbursements.reimbursement_status_id', array_column($statuses, 'id'));
                 break;
             
             default:
@@ -420,10 +433,21 @@ class MainController extends Controller
         }
 
         // set limit, order, etc
-        $result = $orm->orderBy($input['order']['column'], $input['order']['dir'])
-                      ->offset($input['offset'])
-                      ->limit($input['limit'])
-                      ->get();
+        $orm = $orm->orderBy($input['order']['column'], $input['order']['dir'])
+                   ->offset($input['offset'])
+                   ->limit($input['limit']);
+        
+        $result = $orm->get();
+
+        // set
+        if (!empty($result))
+        {
+            foreach ($result as $key => $item):
+
+                $result[$key]->file = url('assets/' . $item->file);
+
+            endforeach;
+        }
 
         // return
         return response()->json([
@@ -490,11 +514,13 @@ class MainController extends Controller
         $validator = Validator::make($request->all(), [
             'id'        => ['required', 'exists:reimbursements,id'],
             'status_id' => ['required', 'in:'.implode(',', $statusIDs)],
+            'note'      => ['max:200']
         ]);
 
         $validator->setAttributeNames([
             'id'        => 'Pengajuan reimbursement',
-            'status_id' => 'Status pengajuan'
+            'status_id' => 'Status pengajuan',
+            'note'      => 'Catatan',
         ]);
 
         if ($validator->fails())
@@ -527,23 +553,28 @@ class MainController extends Controller
         $userID = Auth::id();
         $reimbursement->reimbursement_status_id = $input['status_id'];
         $reimbursement->approver_id = $userID;
-        // $reimbursement->save();
+        $reimbursement->save();
 
         // status get
-        $status = array_map(function($item) use ($input) {
+        $status = [];
+
+        foreach ($allowedStatuses as $item):
+
             if (intval($item['id']) === intval($input['status_id']))
             {
-                return $item;
+                $status = $item;
+                break;
             }
-        }, $allowedStatuses);
+
+        endforeach;
 
         // send log
-        ReimbursementLibrary::generateReimbursementLog($status[0], $input['id'], $reimbursement->owner_id, $userID, $notes);
+        ReimbursementLibrary::generateReimbursementLog($status, $input['id'], $reimbursement->owner_id, $userID, $notes);
 
         // return
         return response()->json([
             'status'  => 'success',
-            'message' => "Pengajuan berhasil {$status[0]['action']}"
+            'message' => "Pengajuan berhasil {$status['action']}"
         ], 200);
     }
 

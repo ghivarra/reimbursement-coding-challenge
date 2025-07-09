@@ -2,7 +2,7 @@
     <Card class="bg-linear-to-t from-gray-50 to-white">
         <CardHeader>
             <div class="mb-2">
-                <StatusBadge :status="props.item.status_name" />
+                <StatusBadge :status="(props.item.deleted_at === null) ? props.item.status_name : 'Dihapus'" />
             </div>
             <CardTitle>{{ props.item.name }}</CardTitle>
             <CardDescription>
@@ -28,6 +28,14 @@
         </CardContent>
         <CardFooter>
             <div class="flex">
+                <Button v-if="allowRespond" v-on:click="viewItem(props.item.id)" type="button" variant="default" size="sm" class="mr-2">
+                    <Icon name="Signature" />
+                    Respon
+                </Button>
+                <Button v-else v-on:click="viewItem(props.item.id)" type="button" variant="outline" size="sm" class="mr-2">
+                    <Icon name="Eye" />
+                    Lihat
+                </Button>
                 <Button v-if="props.item.status_name === 'Dikembalikan'" type="button" variant="default" size="sm" class="mr-2">
                     <Icon name="SquarePen" />
                     Revisi
@@ -52,18 +60,24 @@ import StatusBadge from './StatusBadge.vue'
 import Button from '@/components/ui/button/Button.vue'
 import Icon from '@/components/Icon.vue'
 import { computed, defineProps } from 'vue'
-import { ReimbursementListItem } from '@/types'
+import { Reimbursement } from '@/types'
 import { formatCurrency } from '@/library/common'
 import DeleteDialog from '../custom-dialogs/DeleteDialog.vue'
+import { router } from '@inertiajs/vue3'
 
 const props = defineProps<{
-    item: ReimbursementListItem,
+    item: Reimbursement,
     allowDelete: boolean,
+    allowRespond?: boolean,
     updateList: () => void
 }>()
 
 // compute
 const value = computed(() => formatCurrency(props.item.amount))
 const deleteUri = route('reimbursement.main.delete') + `?id=${props.item.id}`
+
+const viewItem = (id: string) => {
+    router.visit(route('view.application.examine', id))
+}
 
 </script>

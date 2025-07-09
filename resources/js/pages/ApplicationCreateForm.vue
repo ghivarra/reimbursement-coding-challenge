@@ -1,5 +1,5 @@
 <template>
-    <Head title="Application"></Head>
+    <Head title="Buat Reimbursement"></Head>
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
             <Heading title="Buat Pengajuan Reimbursement" description="Form dengan simbol asterisk (*) berwarna merah artinya wajib diisi." class="mb-0" />
