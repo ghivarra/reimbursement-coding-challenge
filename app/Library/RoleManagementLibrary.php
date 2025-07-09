@@ -45,7 +45,7 @@ class RoleManagementLibrary
 
         $access = [
             'menus'   => empty($menus) ? [] : $menus->toArray(),
-            'modules' => empty($menus) ? [] : $modules->toArray(),
+            'modules' => empty($modules) ? [] : $modules->toArray(),
         ];
 
         // return
@@ -71,40 +71,40 @@ class RoleManagementLibrary
     public function getRoleRoute(string $prefix, array $modules)
     {
         $searchRoute = [
-            'with.removed',
+            'all',
             'approver',
+            'with-removed',
             'self',
         ];
 
         $prefixLength = strlen($prefix);
         $correctRoute = '';
 
-        // find
-        foreach ($modules as $module):
+        foreach ($searchRoute as $name):
 
-            if (strlen($module['name']) < $prefixLength)
-            {
-                // must be wrong
-                continue;
-            }
-
-            $sub = substr($module['name'], 0, $prefixLength);
-
-            foreach ($searchRoute as $name):
+            foreach ($modules as $module):
+    
+                if (strlen($module['name']) < $prefixLength)
+                {
+                    // must be wrong
+                    continue;
+                }
+    
+                $sub = substr($module['name'], 0, $prefixLength);
 
                 if (str_contains($module['name'], $name) && ($sub === $prefix))
                 {
                     $correctRoute = $module['name'];
                     break;
                 }
-
+    
+                // has been found
+                if (strlen($correctRoute) > 0)
+                {
+                    break;
+                }
+    
             endforeach;
-
-            // has been found
-            if (strlen($correctRoute) > 0)
-            {
-                break;
-            }
 
         endforeach;
 

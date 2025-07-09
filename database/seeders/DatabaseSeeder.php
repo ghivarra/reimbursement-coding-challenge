@@ -91,9 +91,12 @@ class DatabaseSeeder extends Seeder
             ['name' => 'reimbursement.category.check.limit', 'description' => 'Mengecek limit yang tersisa pada kategori reimbursement.'],
 
             // reimbursement
-            ['name' => 'reimbursement.main.index.with.removed', 'description' => 'Mengakses semua data termasuk yang sudah dihapus.'],
-            ['name' => 'reimbursement.main.index.approver', 'description' => 'Menarik semua data approver kecuali yang sudah dihapus'],
-            ['name' => 'reimbursement.main.index.self', 'description' => 'Mengakses data buatan sendiri'],
+            ['name' => 'reimbursement.main.index.with.removed', 'description' => 'Mengakses semua data termasuk yang sudah dihapus.'], // admin
+            ['name' => 'reimbursement.main.index.approver', 'description' => 'Menarik semua data approver kecuali yang sudah dihapus'], // manager
+            ['name' => 'reimbursement.main.index.self', 'description' => 'Mengakses data buatan sendiri'], // employee
+            ['name' => 'reimbursement.main.index.submitted', 'description' => 'Mengakses data yang sudah diajukan'], // manager
+            ['name' => 'reimbursement.main.index.all', 'description' => 'Mengakses semua data kecuali yang sudah dihapus'], // admin & manager
+            ['name' => 'reimbursement.main.index.archive', 'description' => 'Mengakses hanya data yang sudah dihapus'], // admin
 
             ['name' => 'reimbursement.main.find.with.removed', 'description' => 'Mengakses satu data termasuk yang sudah dihapus.'],
             ['name' => 'reimbursement.main.find.approver', 'description' => 'Menarik satu data approver kecuali yang sudah dihapus'],
@@ -222,6 +225,8 @@ class DatabaseSeeder extends Seeder
                     'reimbursement.category.update',
                     'reimbursement.category.delete',
                     'reimbursement.category.check.limit',
+                    'reimbursement.main.index.all',
+                    'reimbursement.main.index.archive',
                     'reimbursement.main.index.with.removed',
                     'reimbursement.main.find.with.removed',
                     'reimbursement.log.find.with.removed',
@@ -267,7 +272,9 @@ class DatabaseSeeder extends Seeder
             {
                 $modules = [
                     'reimbursement.category.check.limit',
+                    'reimbursement.main.index.all',
                     'reimbursement.main.index.approver',
+                    'reimbursement.main.index.submitted',
                     'reimbursement.main.find.approver',
                     'reimbursement.main.respond',
                     'reimbursement.log.find.approver',

@@ -375,9 +375,10 @@ class MainController extends Controller
         $query = $request->input('query', []);
 
         // orm
-        if ($option === 'with-removed')
+        if ($option === 'archive' || $option === 'with-removed')
         {
             $orm = Reimbursement::withTrashed()->select(...$columns);
+            
 
         } else {
             
@@ -391,12 +392,20 @@ class MainController extends Controller
 
         switch ($option) {
             case 'approver':
-                $status = ReimbursementStatus::select('id')->where('name', 'Dikembalikan')->first();
-                $orm->whereNot('reimbursement_status_id', $status->id);
+                $orm->where('reimbursements.approver_id', '=', Auth::id());
+                break;
+
+            case 'archive':
+                $orm->whereNotNull('deleted_at');
                 break;
 
             case 'self':
                 $orm->where('reimbursements.owner_id', '=', Auth::id());
+                break;
+
+            case 'submitted':
+                $statuses = ReimbursementStatus::select('name')->whereIn('name', ['Diajukan', 'Revisi'])->get();
+                $orm->whereIn('reimbursements.reimbursement_status_id', array_column($statuses, 'name'));
                 break;
             
             default:
@@ -426,6 +435,13 @@ class MainController extends Controller
 
     //====================================================================================================
 
+    public function indexAll(Request $request): JsonResponse
+    {
+        return $this->index($request, 'all');
+    }
+
+    //====================================================================================================
+
     public function indexApprover(Request $request): JsonResponse
     {
         return $this->index($request, 'approver');
@@ -433,9 +449,23 @@ class MainController extends Controller
 
     //====================================================================================================
 
+    public function indexArchive(Request $request): JsonResponse
+    {
+        return $this->index($request, 'archive');
+    }
+
+    //====================================================================================================
+
     public function indexSelf(Request $request): JsonResponse
     {
         return $this->index($request, 'self');
+    }
+
+    //====================================================================================================
+
+    public function indexSubmitted(Request $request): JsonResponse
+    {
+        return $this->index($request, 'submitted');
     }
 
     //====================================================================================================

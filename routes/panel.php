@@ -100,7 +100,10 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
                 Route::prefix('index')->group(function() {
                     Route::post('/with-removed', [MainController::class, 'indexWithRemoved'])->name('reimbursement.main.index.with.removed');
                     Route::post('/self', [MainController::class, 'indexSelf'])->name('reimbursement.main.index.self');
+                    Route::post('/all', [MainController::class, 'indexAll'])->name('reimbursement.main.index.all');
                     Route::post('/approver', [MainController::class, 'indexApprover'])->name('reimbursement.main.index.approver');
+                    Route::post('/submitted', [MainController::class, 'indexSubmitted'])->name('reimbursement.main.index.submitted');
+                    Route::post('/archive', [MainController::class, 'indexArchive'])->name('reimbursement.main.index.archive');
                 });
 
                 // different find for different roles
