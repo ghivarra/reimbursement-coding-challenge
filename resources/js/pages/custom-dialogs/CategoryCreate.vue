@@ -2,7 +2,7 @@
     <Dialog>
         <section class="mb-4">
             <DialogTrigger as-child>
-                <Button type="button" class="cursor-pointer">
+                <Button type="button">
                     <Icon name="Plus" />
                     Buat Baru
                 </Button>

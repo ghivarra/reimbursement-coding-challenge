@@ -15,10 +15,7 @@
         </CardHeader>
         <CardFooter>
             <div class="flex">
-                <Button type="button" variant="default" size="sm" class="mr-2">
-                    <Icon name="SquarePen" />
-                    Update
-                </Button>
+                <CategoryUpdate :id="props.id" v-on:update="props.updateList()" />
                 <CategoryDelete :id="props.id" :name="props.name" v-on:delete="props.updateList()" />
             </div>
         </CardFooter>
@@ -30,8 +27,6 @@
 
 import Card from '@/components/ui/card/Card.vue'
 import CardHeader from '@/components/ui/card/CardHeader.vue'
-import Button from '@/components/ui/button/Button.vue'
-import Icon from '@/components/Icon.vue'
 import CardFooter from '@/components/ui/card/CardFooter.vue'
 import CardTitle from '@/components/ui/card/CardTitle.vue'
 import CardDescription from '@/components/ui/card/CardDescription.vue'
@@ -39,6 +34,7 @@ import CardAction from '@/components/ui/card/CardAction.vue'
 import { computed } from 'vue'
 import { formatCurrency } from '@/library/common'
 import CategoryDelete from '../custom-dialogs/CategoryDelete.vue'
+import CategoryUpdate from '../custom-dialogs/CategoryUpdate.vue'
 
 const props = defineProps<{
     id: number,

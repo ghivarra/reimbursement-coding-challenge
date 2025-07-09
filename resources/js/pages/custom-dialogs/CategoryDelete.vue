@@ -1,7 +1,7 @@
 <template>
     <AlertDialog>
         <AlertDialogTrigger>
-            <Button type="button" variant="destructive">
+            <Button type="button" variant="destructive" size="sm">
                 <Icon name="Trash2" />
                 Hapus
             </Button>
