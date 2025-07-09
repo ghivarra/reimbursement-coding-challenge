@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Panel\Reimbursement;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateReimbursementNumber;
+use App\Jobs\SendNotificationEmail;
 use App\Library\CustomLibrary;
 use App\Library\ReimbursementLibrary;
 use App\Models\Reimbursement;
 use App\Models\ReimbursementCategory;
 use App\Models\ReimbursementStatus;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +128,17 @@ class MainController extends Controller
 
         // dispatch queue worker
         GenerateReimbursementNumber::dispatch($reimbursement->id, $reimbursement->reimbursement_category_id, $reimbursement->date);
+
+        // get email name of all managers
+        $owner = User::select('name')->find($userID);
+        $role  = Role::select('id')->where('name', 'Manager')->first();
+        $users = User::select('email', 'name')->where('role_id', $role->id)->get();
+
+        foreach ($users as $manager):
+
+            SendNotificationEmail::dispatch($reimbursement->name, $owner->name, $manager->email);
+
+        endforeach;
 
         // create log
         ReimbursementLibrary::generateReimbursementLog($status, $reimbursement->id, $userID);

@@ -71,7 +71,8 @@ class GenerateReimbursementNumber implements ShouldQueue
         $dates = explode('-', $this->date);
 
         // count
-        $total = Reimbursement::whereYear('date', $dates[0])
+        $total = Reimbursement::withTrashed()
+                              ->whereYear('date', $dates[0])
                               ->whereMonth('date', $dates[1])
                               ->whereNotNull('number')
                               ->count();
