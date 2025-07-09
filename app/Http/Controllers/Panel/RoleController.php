@@ -46,6 +46,7 @@ class RoleController extends Controller
 
         // return
         return response()->json([
+            'status'  => 'success',
             'message' => 'Data berhasil dibuat',
             'data'    => [
                 'id'            => $role->id,

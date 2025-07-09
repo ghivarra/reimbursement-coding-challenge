@@ -1,4 +1,4 @@
-import { LayoutGrid, ClipboardPenLine, FileText, Archive, UserRoundCog, ShieldCheckIcon, SquarePen, CircleX, CircleCheck, CircleAlert, Search, CalendarRange, Trash2, ChartBarStacked, Plus } from "lucide-vue-next"
+import { LayoutGrid, ClipboardPenLine, FileText, Archive, UserRoundCog, ShieldCheckIcon, SquarePen, CircleX, CircleCheck, CircleAlert, Search, CalendarRange, Trash2, ChartBarStacked, Plus, Save } from "lucide-vue-next"
 
 export default {
     LayoutGrid,
@@ -15,5 +15,6 @@ export default {
     CalendarRange,
     Trash2,
     ChartBarStacked,
-    Plus
+    Plus,
+    Save
 }

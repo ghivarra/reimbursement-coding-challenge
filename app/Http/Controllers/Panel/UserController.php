@@ -53,6 +53,7 @@ class UserController extends Controller
 
         // return
         return response()->json([
+            'status'  => 'success',
             'message' => 'Data berhasil dibuat',
             'data'    => [
                 'id'       => $user->id,

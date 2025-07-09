@@ -27,13 +27,14 @@ class ReimbursementLibrary
         $status = ReimbursementStatus::select('id')->whereNotIn('name', ['Disetujui', 'Dikembalikan'])->get();
 
         // get category
-        $cat = ReimbursementCategory::select('limit_per_month')
+        $cat = ReimbursementCategory::select('id', 'limit_per_month')
                                     ->where('id', $categoryID)
                                     ->limit(1)
                                     ->first();
 
         // get sum
         $sum = Reimbursement::where('owner_id', $userID)
+                            ->where('reimbursement_category_id', $cat->id)
                             ->whereIn('reimbursement_status_id', array_column($status->toArray(), 'id'))
                             ->whereYear('date', $dates[0])
                             ->whereMonth('date', $dates[1])

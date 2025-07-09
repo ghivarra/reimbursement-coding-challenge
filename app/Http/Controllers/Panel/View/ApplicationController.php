@@ -11,7 +11,8 @@ class ApplicationController extends Controller
     public function create(): Response
     {
         return Inertia::render('ApplicationCreateForm', [
-            'access' => session('access')
+            'csrfHash' => csrf_token(),
+            'access'   => session('access')
         ]);
     }
 
@@ -20,7 +21,8 @@ class ApplicationController extends Controller
     public function index(): Response
     {
         return Inertia::render('Application', [
-            'access' => session('access')
+            'csrfHash' => csrf_token(),
+            'access'   => session('access')
         ]);
     }
 

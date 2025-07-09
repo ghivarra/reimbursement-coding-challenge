@@ -35,4 +35,12 @@ const formatCurrency = (value: number): string => {
     return formatter.format(value)
 }
 
-export { buildMenu, hasAccess, formatCurrency }
+function padNumber(num: number, size: number): string {
+    let numStr = num.toString();
+    while (numStr.length < size) {
+        numStr = "0" + numStr;
+    } 
+    return numStr;
+}
+
+export { buildMenu, hasAccess, formatCurrency, padNumber }

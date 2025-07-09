@@ -75,15 +75,17 @@ class MainController extends Controller
             $time = "{$input['date']} 12:00:00";
 
             // get cat name
-            $cat   = ReimbursementCategory::select('name')->where('id', '=', $input['category_id'])->first();
-            $times = CustomLibrary::localTime($time, "MMMM YYYY");
-            $total = CustomLibrary::localCurrency($calculation['current']);
-            $limit = CustomLibrary::localCurrency($calculation['limit']);
+            $cat       = ReimbursementCategory::select('name')->where('id', '=', $input['category_id'])->first();
+            $times     = CustomLibrary::localTime($time, "MMMM YYYY");
+            $total     = CustomLibrary::localCurrency($calculation['current']);
+            $limit     = CustomLibrary::localCurrency($calculation['limit']);
+            $amount    = CustomLibrary::localCurrency($input['amount']);
+            $available = CustomLibrary::localCurrency($calculation['available']);
 
             // return error
             return response()->json([
                 'status'  => 'error',
-                'message' => "Total nilai reimbursement melebihi kalkulasi batas anggaran reimbursement bulan {$times} untuk kategori {$cat->name}. Anda sudah mengajukan reimbursement pada bulan {$times} sejumlah {$total} dari maksimal limit {$limit}.",
+                'message' => "Total nilai reimbursement {$amount} melebihi sisa anggaran reimbursement bulan {$times} untuk kategori {$cat->name} yaitu {$available}. Anda sudah mengajukan reimbursement kategori {$cat->name} pada bulan {$times} sejumlah {$total} dari maksimal limit {$limit}.",
                 'errors'  => $validator->errors()
             ], 422);
         }
@@ -128,6 +130,7 @@ class MainController extends Controller
 
         // return
         return response()->json([
+            'status'  => 'success',
             'message' => 'Data berhasil dibuat',
             'data'    => $reimbursement,
         ], 200);

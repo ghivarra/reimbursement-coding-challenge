@@ -2,7 +2,11 @@
     <Head title="Dasbor" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto"></div>
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div class="bg-green-50 text-green- p-4 rounded-md">
+                Selamat datang <b>{{ props.userData.name }}</b>, anda login sebagai <b>{{ props.userData.role_name }}</b>.
+            </div>
+        </div>
     </AppLayout>
 </template>
 
@@ -21,7 +25,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type UserData = {
+    id: number,
+    name: string,
+    email: string,
+    role_id: number,
+    role_name: string,
+}
+
 const props = defineProps<{
+    userData: UserData,
     access: AccessProp
 }>()
 
