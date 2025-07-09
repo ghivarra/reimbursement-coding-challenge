@@ -99,7 +99,7 @@ const searchList = (query: string): void => {
 
     // reset if empty
     if (query.length < 1) {
-        filteredCategories.value = categories.value
+        filteredCategories.value = JSON.parse(JSON.stringify(categories.value))
     }
 
     filteredCategories.value = categories.value.filter((category) => {
