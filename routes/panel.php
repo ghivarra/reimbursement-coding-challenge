@@ -51,7 +51,7 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
         Route::prefix('application')->group(function() {
             Route::get('/', [ApplicationController::class, 'index'])->name('view.application');
             Route::get('/create', [ApplicationController::class, 'create'])->name('view.application.create');
-            Route::get('/update', [ApplicationController::class, 'update'])->name('view.application.update');
+            Route::get('/update/{id}', [ApplicationController::class, 'update'])->name('view.application.update');
             Route::get('/examine/{id}', [ApplicationController::class, 'examine'])->name('view.application.examine');
         });
 

@@ -60,13 +60,36 @@ class ApplicationController extends Controller
         return Inertia::render('Application', [
             'endpoint' => route($route),
             'csrfHash' => csrf_token(),
-            'access'   => session('access')
+            'access'   => $access
         ]);
     }
 
     //===================================================================================================
 
-    
+    public function update(string $id): Response
+    {
+        // get id
+        $application = Reimbursement::withTrashed()->where('id', $id)->first();
+
+        // abort if empty
+        if (empty($application))
+        {
+            abort(404, 'Pengajuan reimbursement tidak ditemukan');
+        }
+
+        // find only correct index route
+        $roleLib = new RoleManagementLibrary();
+        $access  = $roleLib->getUserAccess(Auth::id());
+
+        // set
+        $application->file = url('assets/' . $application->file);
+        
+        return Inertia::render('ApplicationUpdateForm', [
+            'default'  => $application,
+            'csrfHash' => csrf_token(),
+            'access'   => $access
+        ]);
+    }
 
     //===================================================================================================
 }

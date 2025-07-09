@@ -18,7 +18,7 @@
                     </div>
                     <div class="flex items-center">
                         <Icon name="Calendar" class="mr-2 text-gray-400" />
-                        {{ reimbursement?.date }}
+                        {{ formatDateTime(reimbursement?.date) }}
                     </div>
                 </div>
             </section>

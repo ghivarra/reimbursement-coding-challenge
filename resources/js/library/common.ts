@@ -45,13 +45,27 @@ function padNumber(num: number, size: number): string {
     return numStr;
 }
 
-const formatDateTime = (time: string): string  => {
-    // convert to UTC
-    // 2025-01-05 23:11:06 become 2025-01-05T23:11:06+00:00
-    const utcTime = time.includes('T') ? time : time.replace(' ', 'T') + '+00:00';
-    const dateObj = new Date(utcTime)
+const formatDateTime = (time: string | undefined): string  => {
 
-    return dateObj.toLocaleString('id-ID', {
+    if (typeof time === 'undefined') {
+        return ''
+    }
+
+    let utcTime = ''
+
+    if (time.length === 10) {
+
+        utcTime = time + 'T12:00:00+00:00';
+
+    } else {
+
+        // convert to UTC
+        // 2025-01-05 23:11:06 become 2025-01-05T23:11:06+00:00
+        utcTime = time.includes('T') ? time : time.replace(' ', 'T') + '+00:00';
+    }
+    
+    const dateObj = new Date(utcTime)
+    const result = dateObj.toLocaleString('id-ID', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
@@ -60,6 +74,8 @@ const formatDateTime = (time: string): string  => {
         second: '2-digit',
         timeZoneName: 'short'
     })
+
+    return (time.length === 10) ? result.substring(0, 10) : result
 }
 
 export { buildMenu, hasAccess, formatCurrency, padNumber, formatDateTime }

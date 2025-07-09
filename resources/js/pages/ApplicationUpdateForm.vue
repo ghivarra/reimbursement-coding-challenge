@@ -108,13 +108,13 @@ import Button from '@/components/ui/button/Button.vue'
 import Icon from '@/components/Icon.vue'
 import Input from '@/components/ui/input/Input.vue'
 import { AccessProp, BreadcrumbItem } from '@/types'
-import { provide, ref, Ref } from 'vue'
+import { onMounted, provide, ref, Ref } from 'vue'
 import { Select, SelectContent, SelectItem, SelectValue, SelectTrigger } from '@/components/ui/select'
 import axios, { AxiosResponse } from 'axios'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { CalendarIcon } from 'lucide-vue-next'
 import Calendar from '@/components/ui/calendar/Calendar.vue'
-import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date'
+import { DateFormatter, type DateValue, getLocalTimeZone, CalendarDate } from '@internationalized/date'
 import { cn } from '@/lib/utils'
 import Textarea from '@/components/ui/textarea/Textarea.vue'
 import { padNumber } from '@/library/common'
@@ -136,7 +136,22 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ]
 
+type DefaultData = {
+    id: string,
+    number: string,
+    name: string,
+    file: string,
+    amount: number,
+    description: string,
+    date: string,
+    owner_id: number,
+    approver_id: number | null,
+    reimbursement_status_id: number,
+    reimbursement_category_id: number,
+}
+
 const props = defineProps<{
+    default: DefaultData,
     csrfHash: string,
     access: AccessProp
 }>()
@@ -154,14 +169,14 @@ type Form = {
     name: string,
     date: DateValue | undefined,
     amount: string,
-    category_id: string,
+    category_id: number,
     description: string
 }
 const form: Ref<Form> = ref({
     name: '',
     date: undefined,
     amount: '',
-    category_id: '',
+    category_id: 0,
     description: '',
 })
 
@@ -181,6 +196,26 @@ const error = ref({
     title: '',
     description: ''
 })
+
+const putDefault = () => {
+    const dates = props.default.date.split('-')
+    form.value.name = props.default.name
+    form.value.date = new CalendarDate(parseInt(dates[0]), parseInt(dates[1]), parseInt(dates[2]))
+    form.value.category_id = props.default.reimbursement_category_id
+    form.value.amount = String(props.default.amount)
+    form.value.description = props.default.description
+
+    // show
+    const ext = props.default.file.slice(-3)
+
+    if (ext === 'pdf') {
+        pdfPreviewHTML.value?.setAttribute('src', props.default.file)
+        showPDFPreview.value = true
+    } else {
+        imagePreviewHTML.value?.setAttribute('src', props.default.file)
+        showImagePreview.value = true
+    }
+}
 
 // update kategori
 const updateCategoryList = () => {
@@ -255,14 +290,16 @@ const saveForm = () => {
 
     const formData = new FormData(multipartForm?.value)
     formData.append('_token', props.csrfHash)
+    formData.append('_method', 'PATCH')
+    formData.append('id', props.default.id)
     formData.append('name', form.value.name)
     formData.append('date', selectedDate)
     formData.append('amount', amountStr.replace(/\D/g, ''))
-    formData.append('category_id', form.value.category_id)
+    formData.append('category_id', String(form.value.category_id))
     formData.append('description', form.value.description)
 
     // send file
-    axios.post(route('reimbursement.main.create'), formData)
+    axios.post(route('reimbursement.main.update'), formData)
         .then((response: AxiosResponse) => {
             const res = response.data
             if (res.status === 'success') {
@@ -273,7 +310,7 @@ const saveForm = () => {
             console.error(err)
 
             if (typeof err.response.data !== 'undefined') {
-                error.value.title = 'Gagal Menambahkan Reimbursement'
+                error.value.title = 'Gagal Memperbaharui Reimbursement'
                 error.value.description = err.response.data.message
 
                 swal({
@@ -284,7 +321,12 @@ const saveForm = () => {
             }
         })
 }
+
 // update data
 updateCategoryList()
+
+onMounted(() => {
+    putDefault()
+})
 
 </script>

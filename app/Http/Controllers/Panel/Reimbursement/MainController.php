@@ -619,7 +619,7 @@ class MainController extends Controller
 
         // get status diajukan
         $statuses = ReimbursementStatus::select('id', 'name', 'template')
-                                       ->whereIn('name', ['Revisi', 'Dikembalikan'])
+                                       ->whereIn('name', ['Revisi', 'Dikembalikan', 'Dihapus', 'Direstorasi'])
                                        ->get();
 
         if (!empty($statuses))
@@ -638,6 +638,10 @@ class MainController extends Controller
             } elseif ($item['name'] === 'Dikembalikan') {
 
                 $status['dikembalikan'] = $item;
+
+            }  elseif ($item['name'] === 'Direstorasi') {
+
+                $status['direstorasi'] = $item;
             }
             
         endforeach;
@@ -661,7 +665,7 @@ class MainController extends Controller
             ], 403);
         }
         
-        if (intval($reimbursement->reimbursement_status_id) !== intval($status['dikembalikan']['id']))
+        if (intval($reimbursement->reimbursement_status_id) !== intval($status['dikembalikan']['id']) && intval($reimbursement->reimbursement_status_id) !== intval($status['direstorasi']['id']))
         {
             // return
             return response()->json([
@@ -689,9 +693,9 @@ class MainController extends Controller
 
             if ($key === 'file')
             {
-                $file = $request->file($key);
+                $file = $request->file($key, null);
 
-                if ($file->isValid())
+                if (!is_null($file) && $file->isValid())
                 {
                     $rules[$key] = $rule;
                 }
@@ -764,7 +768,7 @@ class MainController extends Controller
         // upload file
         $uploadFile = $request->file('file');
 
-        if ($uploadFile->isValid())
+        if (!is_null($uploadFile) && $uploadFile->isValid())
         {
             // directory
             $dates     = explode('-', $input['date']);
