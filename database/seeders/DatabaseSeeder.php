@@ -142,8 +142,8 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Pengajuan', 'route_name' => 'view.application', 'icon' => 'FileText', 'sort_order' => 2],
             ['name' => 'Arsip', 'route_name' => 'view.archive', 'icon' => 'Archive', 'sort_order' => 3],
             ['name' => 'Kategori', 'route_name' => 'view.category', 'icon' => 'ChartBarStacked', 'sort_order' => 4],
-            ['name' => 'Pengguna', 'route_name' => 'view.user', 'icon' => 'UserRoundCog', 'sort_order' => 5],
-            ['name' => 'Role', 'route_name' => 'view.role', 'icon' => 'ShieldCheckIcon', 'sort_order' => 6],
+            // ['name' => 'Pengguna', 'route_name' => 'view.user', 'icon' => 'UserRoundCog', 'sort_order' => 5],
+            // ['name' => 'Role', 'route_name' => 'view.role', 'icon' => 'ShieldCheckIcon', 'sort_order' => 6],
         ];
 
         // add menus
@@ -247,8 +247,8 @@ class DatabaseSeeder extends Seeder
                     'Pengajuan',
                     'Arsip',
                     'Kategori',
-                    'Pengguna',
-                    'Role',
+                    // 'Pengguna',
+                    // 'Role',
                 ];
             }
 
