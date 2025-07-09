@@ -40,13 +40,17 @@
                     <Icon name="SquarePen" />
                     Revisi
                 </Button>
-                <DeleteDialog
+                <AlertDialog
                     v-if="props.allowDelete"
                     :title="`Hapus Pengajuan ${props.item.name}?`"
                     :uri="deleteUri"
-                    v-on:delete="props.updateList()"
+                    v-on:update="props.updateList()"
                     description="Pengajuan reimbursement yang dihapus hanya bisa dikembalikan oleh Admin"
                     button-text="Ya, hapus"
+                    trigger-button-icon="Trash2"
+                    trigger-button-text="Hapus"
+                    trigger-button-variant="destructive"
+                    trigger-button-size="sm"
                 />
             </div>
         </CardFooter>
@@ -62,8 +66,8 @@ import Icon from '@/components/Icon.vue'
 import { computed, defineProps } from 'vue'
 import { Reimbursement } from '@/types'
 import { formatCurrency } from '@/library/common'
-import DeleteDialog from '../custom-dialogs/DeleteDialog.vue'
 import { router } from '@inertiajs/vue3'
+import AlertDialog from '../custom-dialogs/AlertDialog.vue'
 
 const props = defineProps<{
     item: Reimbursement,

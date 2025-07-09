@@ -106,6 +106,8 @@ class DatabaseSeeder extends Seeder
             ['name' => 'reimbursement.main.update', 'description' => 'Merevisi reimbursement'], // employee only
             ['name' => 'reimbursement.main.delete', 'description' => 'Menghapus reimbursement'], // employee only
             ['name' => 'reimbursement.main.respond', 'description' => 'Memberikan respon penerimaan atau penolakan terhadap reimbursement'], // manager
+            ['name' => 'reimbursement.main.restore', 'description' => 'Merestorasi reimbursement yang sudah dihapus.'], // admin only
+            
 
             // reimbursement logs
             ['name' => 'reimbursement.log.find.with.removed', 'description' => 'Mengakses satu data log dari pengajuan termasuk yang sudah dihapus.'],
@@ -229,6 +231,7 @@ class DatabaseSeeder extends Seeder
                     'reimbursement.main.index.archive',
                     'reimbursement.main.index.with.removed',
                     'reimbursement.main.find.with.removed',
+                    'reimbursement.main.restore',
                     'reimbursement.log.find.with.removed',
                     'view.application',
                     'view.application.examine',
@@ -347,11 +350,12 @@ class DatabaseSeeder extends Seeder
     {
         $statuses = [
             ['name' => 'Diajukan', 'action' => 'diajukan', 'template' => 'Pengajuan reimbursement {$name} sudah {$action} oleh {$owner}.'],
-            ['name' => 'Dikembalikan', 'action' => 'dikembalikan', 'template' => 'Pengajuan reimbursement {$name} {$action} dan harus direvisi oleh {$owner}.'],
+            ['name' => 'Dikembalikan', 'action' => 'dikembalikan', 'template' => 'Pengajuan reimbursement {$name} {$action} oleh Manajer {$approver} dan boleh direvisi.'],
             ['name' => 'Revisi', 'action' => 'direvisi', 'template' => 'Pengajuan reimbursement {$name} sudah {$action} dan diajukan kembali oleh {$owner}.'],
-            ['name' => 'Disetujui', 'action' => 'disetujui', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
-            ['name' => 'Ditolak', 'action' => 'ditolak', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
+            ['name' => 'Disetujui', 'action' => 'disetujui', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh Manajer {$approver}.'],
+            ['name' => 'Ditolak', 'action' => 'ditolak', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh Manajer {$approver}.'],
             ['name' => 'Dihapus', 'action' => 'dihapus', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$owner}.'],
+            ['name' => 'Direstorasi', 'action' => 'direstorasi', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh Admin {$approver}.'],
         ];
 
         ReimbursementStatus::insert($statuses);

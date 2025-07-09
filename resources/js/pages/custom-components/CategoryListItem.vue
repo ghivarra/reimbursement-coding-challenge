@@ -16,11 +16,16 @@
         <CardFooter>
             <div class="flex">
                 <CategoryUpdate :id="props.id" v-on:update="props.updateList()" />
-                <DeleteDialog 
+                <AlertDialog 
                     :title="`Apakah anda yakin akan ketagori menghapus ${props.name}?`" 
                     :uri="deleteUri"
                     description="Aksi ini tidak bisa diputar balik dan kategori akan terhapus secara permanen." 
                     button-text="Ya, Hapus"
+                    v-on:update="props.updateList()"
+                    trigger-button-icon="Trash2"
+                    trigger-button-text="Hapus"
+                    trigger-button-variant="destructive"
+                    trigger-button-size="sm"
                 />
                 <!--<CategoryDelete :id="props.id" :name="props.name" v-on:delete="props.updateList()" />-->
             </div>
@@ -41,7 +46,7 @@ import { computed } from 'vue'
 import { formatCurrency } from '@/library/common'
 // import CategoryDelete from '../custom-dialogs/CategoryDelete.vue'
 import CategoryUpdate from '../custom-dialogs/CategoryUpdate.vue'
-import DeleteDialog from '../custom-dialogs/DeleteDialog.vue'
+import AlertDialog from '../custom-dialogs/AlertDialog.vue'
 
 const props = defineProps<{
     id: number,

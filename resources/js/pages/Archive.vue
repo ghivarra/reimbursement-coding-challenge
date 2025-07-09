@@ -9,7 +9,7 @@
             </div>
             
             <div v-for="(item, key) in reimbursementList" :key="key" class="mb-2">
-                <ReimbursementsListItem :item="item" :allow-delete="false" :update-list="getReimbursementList" />
+                <ReimbursementsListItem :item="item" :allow-delete="false" :allow-restore="true" :update-list="getReimbursementList" />
             </div>
         </div>
     </AppLayout>

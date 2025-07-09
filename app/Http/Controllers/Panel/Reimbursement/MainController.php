@@ -789,8 +789,47 @@ class MainController extends Controller
 
         // return
         return response()->json([
+            'status'  => 'success',
             'message' => 'Data berhasil diperbaharui',
             'data'    => $reimbursement,
+        ], 200);
+    }
+
+    //====================================================================================================
+
+    public function restore(Request $request): JsonResponse
+    {
+        // get input query
+        $validator = Validator::make($request->all(), [
+            'id' => ['exists:reimbursments,id']
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Permintaan gagal diproses',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        // input
+        $input = $validator->validated();
+
+        // get instance
+        $reimbursement = Reimbursement::withTrashed()->where('id', $input['id'])->get();
+        $reimbursement->restore();
+
+        // get status
+        $status = ReimbursementStatus::where('name', 'Dihapus')->first()->toArray();
+
+        // send logs      
+        ReimbursementLibrary::generateReimbursementLog($status, $reimbursement->id, $reimbursement->owner_id, Auth::id());
+
+        // return
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Data berhasil diperbaharui'
         ], 200);
     }
 

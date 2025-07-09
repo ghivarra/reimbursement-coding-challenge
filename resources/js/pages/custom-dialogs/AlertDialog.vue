@@ -1,9 +1,9 @@
 <template>
     <AlertDialog>
         <AlertDialogTrigger>
-            <Button type="button" variant="destructive" size="sm">
-                <Icon name="Trash2" />
-                Hapus
+            <Button type="button" :variant="props.triggerButtonVariant" :size="props.triggerButtonSize">
+                <Icon :name="triggerButtonIcon" />
+                {{ props.triggerButtonText }}
             </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -39,14 +39,18 @@ import axios, { AxiosResponse } from 'axios'
 
 // inject
 const csrfHash: string|undefined = inject('csrfHash')
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['update'])
 
 // get props
 const props = defineProps<{
     title: string,
     description: string,
     uri: string,
-    buttonText: string
+    buttonText: string,
+    triggerButtonText: string,
+    triggerButtonVariant: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost",
+    triggerButtonIcon: string,
+    triggerButtonSize: "sm" | "default" | "icon" | "lg",
 }>()
 
 // methods
@@ -61,7 +65,7 @@ const saveForm = () => {
         .then((response: AxiosResponse) => {
             const res = response.data
             if (res.status === 'success') {
-                emit('delete')
+                emit('update')
             }
         })
         .catch((err) => {
