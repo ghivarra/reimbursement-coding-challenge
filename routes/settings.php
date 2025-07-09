@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Settings\PasswordController;
+use App\Library\RoleManagementLibrary;
+use Illuminate\Support\Facades\Auth;
 // use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,7 +21,10 @@ Route::prefix('panel')->group(function() {
         Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
 
         Route::get('settings/appearance', function () {
-            return Inertia::render('settings/Appearance');
+            $roleLib = new RoleManagementLibrary();
+            return Inertia::render('settings/Appearance', [
+                'access' => $roleLib->getUserAccess(Auth::id())
+            ]);
         })->name('appearance');
     });
 });

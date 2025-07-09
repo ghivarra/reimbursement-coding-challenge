@@ -120,6 +120,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'view.role.update.menu', 'description' => 'Mengakses halaman update menu manajemen akses/role'],
             ['name' => 'view.archive', 'description' => 'Mengakses halaman arsip/pengajuan yang sudah dihapus'],
             ['name' => 'view.user', 'description' => 'Mengakses halaman user'],
+            ['name' => 'view.category', 'description' => 'Mengakses kategori reimbursement'],
 
         ];
 
@@ -135,8 +136,9 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Persetujuan', 'route_name' => 'view.approval', 'icon' => 'ClipboardPenLine', 'sort_order' => 1],
             ['name' => 'Pengajuan', 'route_name' => 'view.application', 'icon' => 'FileText', 'sort_order' => 2],
             ['name' => 'Arsip', 'route_name' => 'view.archive', 'icon' => 'Archive', 'sort_order' => 3],
-            ['name' => 'Pengguna', 'route_name' => 'view.user', 'icon' => 'UserRoundCog', 'sort_order' => 4],
-            ['name' => 'Role', 'route_name' => 'view.role', 'icon' => 'ShieldCheckIcon', 'sort_order' => 5],
+            ['name' => 'Kategori', 'route_name' => 'view.category', 'icon' => 'ChartBarStacked', 'sort_order' => 4],
+            ['name' => 'Pengguna', 'route_name' => 'view.user', 'icon' => 'UserRoundCog', 'sort_order' => 5],
+            ['name' => 'Role', 'route_name' => 'view.role', 'icon' => 'ShieldCheckIcon', 'sort_order' => 6],
         ];
 
         // add menus
@@ -229,11 +231,13 @@ class DatabaseSeeder extends Seeder
                     'view.role.update.menu',
                     'view.archive',
                     'view.user',
+                    'view.category',
                 ];
 
                 $menus = [
                     'Pengajuan',
                     'Arsip',
+                    'Kategori',
                     'Pengguna',
                     'Role',
                 ];

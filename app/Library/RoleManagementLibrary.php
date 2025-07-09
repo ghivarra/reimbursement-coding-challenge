@@ -60,7 +60,7 @@ class RoleManagementLibrary
         $access = $this->getUserAccess($userID);
 
         // set to session
-        session(['access', $access]);
+        session(['access' => $access]);
 
         // set
         return in_array($routeName, array_column($access['modules'], 'name'));

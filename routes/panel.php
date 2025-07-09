@@ -49,6 +49,7 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
         });
 
         Route::get('/archive', [ViewController::class, 'archive'])->name('view.archive');
+        Route::get('/category', [ViewController::class, 'category'])->name('view.category');
         Route::get('/user-view', [ViewController::class, 'user'])->name('view.user');
 
         

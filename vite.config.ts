@@ -20,4 +20,12 @@ export default defineConfig({
             },
         }),
     ],
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+            '@/Components': '/resources/js/Components',
+            '@/lib/utils': '/resources/js/lib/utils',
+            '@/Components/ui': '/resources/js/Components/ui',
+        }
+    }
 });

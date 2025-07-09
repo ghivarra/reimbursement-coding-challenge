@@ -66,6 +66,4 @@ newMainNavItems.forEach((newMenu) => {
     mainNavItems.push(newMenu)
 })
 
-console.log(access);
-
 </script>

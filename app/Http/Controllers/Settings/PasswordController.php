@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Library\RoleManagementLibrary;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
@@ -17,7 +19,11 @@ class PasswordController extends Controller
      */
     public function edit(): Response
     {
-        return Inertia::render('settings/Password');
+        $roleLib = new RoleManagementLibrary();
+
+        return Inertia::render('settings/Password', [
+            'access' => $roleLib->getUserAccess(Auth::id())
+        ]);
     }
 
     /**

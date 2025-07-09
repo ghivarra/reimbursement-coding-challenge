@@ -15,7 +15,18 @@ class ViewController extends Controller
         $roleLib = new RoleManagementLibrary();
 
         return Inertia::render('Dashboard', [
-            'access' => $roleLib->getUserAccess(Auth::id())
+            'csrfHash' => csrf_token(),
+            'access'   => $roleLib->getUserAccess(Auth::id())
+        ]);
+    }
+
+    //=====================================================================================================
+
+    public function category(): Response
+    {
+        return Inertia::render('Category', [
+            'csrfHash' => csrf_token(),
+            'access'   => session('access')
         ]);
     }
 

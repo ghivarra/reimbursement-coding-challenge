@@ -1,4 +1,4 @@
-import { AccessMenu, NavItem } from "@/types";
+import { AccessMenu, AccessModule, NavItem } from "@/types";
 
 const buildMenu = (menus?: AccessMenu[]): NavItem[] => {
     const menuList: NavItem[] = []
@@ -16,4 +16,23 @@ const buildMenu = (menus?: AccessMenu[]): NavItem[] => {
     return menuList
 }
 
-export { buildMenu }
+const hasAccess = (moduleName: string, modules?: AccessModule[]): boolean => {
+    if (typeof modules === 'undefined') {
+        return false
+    }
+
+    const filteredModules = modules.filter((module) => {
+        if (module.name === moduleName) {
+            return module
+        }
+    })
+
+    return filteredModules.length > 0
+}
+
+const formatCurrency = (value: number): string => {
+    const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
+    return formatter.format(value)
+}
+
+export { buildMenu, hasAccess, formatCurrency }
