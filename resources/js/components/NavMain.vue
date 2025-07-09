@@ -14,11 +14,11 @@ const page = usePage();
 
 <template>
     <SidebarGroup class="px-2 py-3">
-        <SidebarGroupLabel class="hidden"></SidebarGroupLabel>
+        <SidebarGroupLabel>Reimbursement</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
-                <SidebarMenuButton as-child :is-active="route(item.href) === page.url" :tooltip="item.title">
-                    <Link :href="route(item.href)">
+                <SidebarMenuButton as-child :is-active="item.href === page.url" :tooltip="item.title">
+                    <Link :href="item.href">
                         <Icon :name="(typeof item.icon == 'undefined') ? 'badge' : item.icon" />
                         <span>{{ item.title }}</span>
                     </Link>

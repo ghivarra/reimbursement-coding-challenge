@@ -23,12 +23,9 @@ class RoleManagementLibrary
         {
             return false;
         }
-
-        // change to array
-        $user = $user->toArray();
         
         // if superadmin then access all modules and menu
-        if ($user['is_superadmin'] === 1)
+        if ($user->is_superadmin === 1)
         {
             $menus   = Menu::select('name', 'route_name', 'icon', 'sort_order')->orderBy('sort_order', 'ASC')->get();
             $modules = Module::select('name')->get();
@@ -36,12 +33,12 @@ class RoleManagementLibrary
         } else {
 
             $menus   = RoleMenuList::select('menus.name', 'menus.route_name', 'menus.icon', 'menus.sort_order')
-                                   ->where('role_id', '=', $user['role_id'])
+                                   ->where('role_id', '=', $user->role_id)
                                    ->join('menus', 'menu_id', '=', 'menus.id')
                                    ->get();
 
             $modules = RoleModuleList::select('modules.name')
-                                     ->where('role_id', '=', $user['role_id'])
+                                     ->where('role_id', '=', $user->role_id)
                                      ->join('modules', 'module_id', '=', 'modules.id')
                                      ->get();
         }

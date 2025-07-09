@@ -34,4 +34,20 @@ export interface User {
     updated_at: string;
 }
 
+export interface AccessMenu {
+    icon: string,
+    name: string,
+    route_name: string,
+    sort_order: string,
+}
+
+export interface AccessModule {
+    name: string
+}
+
+export interface AccessProp {
+    menus: AcessMenu[],
+    modules: AccessModule[]
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;
