@@ -142,8 +142,8 @@ class MainController extends Controller
     public function delete(Request $request): JsonResponse
     {
         // find
-        $id  = $request->input('id');
-        $reimbursement = Reimbursement::select('id', 'name', 'owner_id')->where('id', $id)->first();
+        $id            = $request->input('id');
+        $reimbursement = Reimbursement::where('id', $id)->first();
         
         // if empty
         if (empty($reimbursement))
@@ -168,8 +168,39 @@ class MainController extends Controller
             ], 403);
         }
 
+        // cannot delete if already been responded
+        $statuses = ReimbursementStatus::whereIn('name', ['Dihapus', 'Ditolak', 'Disetujui'])->get();
+        $statuses = empty($statuses) ? [] : $statuses->toArray();
+
+        if (in_array($reimbursement->reimbursement_status_id, array_column($statuses, 'id')))
+        {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Pengajuan tidak bisa dihapus karena sudah direspon',
+            ], 403);
+        }
+
+        $status = [];
+
+        foreach ($statuses as $item):
+
+            if ($item['name'] === 'Dihapus')
+            {
+                $status = $item;
+                break;
+            }
+
+        endforeach;
+
+        // update log first
+        $reimbursement->reimbursement_status_id = $status['id'];
+        $reimbursement->save();
+        
         // delete
         $reimbursement->delete();
+
+        // generate logs
+        ReimbursementLibrary::generateReimbursementLog($status, $reimbursement->id, $reimbursement->owner_id, $reimbursement->approver_id);
 
         // return
         return response()->json([

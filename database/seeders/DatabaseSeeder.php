@@ -351,6 +351,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Revisi', 'action' => 'direvisi', 'template' => 'Pengajuan reimbursement {$name} sudah {$action} dan diajukan kembali oleh {$owner}.'],
             ['name' => 'Disetujui', 'action' => 'disetujui', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
             ['name' => 'Ditolak', 'action' => 'ditolak', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$approver}.'],
+            ['name' => 'Dihapus', 'action' => 'dihapus', 'template' => 'Pengajuan reimbursement {$name} telah {$action} oleh {$owner}.'],
         ];
 
         ReimbursementStatus::insert($statuses);

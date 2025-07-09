@@ -140,7 +140,13 @@ const saveForm = () => {
         })
         .catch((err) => {
             console.error(err)
-            alert(err)
+            if (typeof err.response.data !== 'undefined') {
+                swal({
+                    title: 'Whoopsss',
+                    text: err.response.data.message,
+                    icon: "error",
+                });
+            }
         })
 }
 
