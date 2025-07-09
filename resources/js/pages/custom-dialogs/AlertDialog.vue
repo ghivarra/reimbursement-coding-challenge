@@ -18,7 +18,7 @@
                     Batal
                 </AlertDialogCancel>
                 <AlertDialogAction>
-                    <Button @click.prevent="saveForm" type="button" variant="destructive">
+                    <Button @click.prevent="saveForm" type="button" :variant="props.triggerButtonVariant">
                         {{ props.buttonText }}
                     </Button>
                 </AlertDialogAction>
@@ -36,6 +36,7 @@ import Button from '@/components/ui/button/Button.vue'
 import { AlertDialogAction } from 'reka-ui'
 import { inject } from 'vue'
 import axios, { AxiosResponse } from 'axios'
+import swal from 'sweetalert'
 
 // inject
 const csrfHash: string|undefined = inject('csrfHash')
@@ -51,10 +52,37 @@ const props = defineProps<{
     triggerButtonVariant: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost",
     triggerButtonIcon: string,
     triggerButtonSize: "sm" | "default" | "icon" | "lg",
+    method?: "get" | "delete"
 }>()
 
 // methods
 const saveForm = () => {
+
+    if (typeof props.method !== 'undefined') {
+
+        if (props.method === 'get') {
+
+            axios.get(props.uri)
+                .then((response: AxiosResponse) => {
+                    const res = response.data
+                    if (res.status === 'success') {
+                        emit('update')
+                    }
+                })
+                .catch((err) => {
+                    console.error(err)
+                    if (typeof err.response.data !== 'undefined') {
+                        swal({
+                            title: 'Whoopsss',
+                            text: err.response.data.message,
+                            icon: "error",
+                        });
+                    }
+                })
+
+            return
+        }
+    }
 
     // save data
     axios.delete(props.uri, {
@@ -78,6 +106,7 @@ const saveForm = () => {
                 });
             }
         })
+
 }
 
 </script>

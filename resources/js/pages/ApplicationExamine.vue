@@ -135,6 +135,7 @@ import Icon from '@/components/Icon.vue'
 import Badge from '@/components/ui/badge/Badge.vue'
 import { formatCurrency, formatDateTime, hasAccess } from '@/library/common'
 import StatusBadge from './custom-components/StatusBadge.vue'
+import swal from 'sweetalert'
 
 const props = defineProps<{
     id: string,

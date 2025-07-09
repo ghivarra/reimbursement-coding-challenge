@@ -801,7 +801,7 @@ class MainController extends Controller
     {
         // get input query
         $validator = Validator::make($request->all(), [
-            'id' => ['exists:reimbursments,id']
+            'id' => ['exists:reimbursements,id']
         ]);
 
         if ($validator->fails())
@@ -816,12 +816,14 @@ class MainController extends Controller
         // input
         $input = $validator->validated();
 
-        // get instance
-        $reimbursement = Reimbursement::withTrashed()->where('id', $input['id'])->get();
-        $reimbursement->restore();
-
         // get status
-        $status = ReimbursementStatus::where('name', 'Dihapus')->first()->toArray();
+        $status = ReimbursementStatus::where('name', 'Direstorasi')->first()->toArray();
+
+        // get instance
+        $reimbursement = Reimbursement::withTrashed()->where('id', $input['id'])->first();
+        $reimbursement->reimbursement_status_id = $status['id'];
+        $reimbursement->save();
+        $reimbursement->restore();        
 
         // send logs      
         ReimbursementLibrary::generateReimbursementLog($status, $reimbursement->id, $reimbursement->owner_id, Auth::id());

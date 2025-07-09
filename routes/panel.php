@@ -131,7 +131,7 @@ Route::middleware(['auth'])->prefix('/panel')->group(function() {
                 Route::patch('/update', [MainController::class, 'update'])->name('reimbursement.main.update');
                 Route::delete('/delete', [MainController::class, 'delete'])->name('reimbursement.main.delete');
                 Route::post('/respond', [MainController::class, 'respond'])->name('reimbursement.main.respond');
-                Route::post('/restore', [MainController::class, 'restore'])->name('reimbursement.main.restore');
+                Route::get('/restore', [MainController::class, 'restore'])->name('reimbursement.main.restore');
             });
 
             // different log for different roles

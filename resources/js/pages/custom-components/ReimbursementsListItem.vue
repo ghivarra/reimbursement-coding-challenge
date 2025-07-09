@@ -41,6 +41,19 @@
                     Revisi
                 </Button>
                 <AlertDialog
+                    v-if="(typeof allowRestore !== 'undefined' && allowRestore === true)"
+                    :title="`Kembalikan Pengajuan ${props.item.name}?`"
+                    :uri="restoreUri"
+                    v-on:update="props.updateList()"
+                    description="Pengajuan reimbursement yang dikembalikan hanya bisa dihapus kembali oleh pemilik pengajuan"
+                    button-text="Ya, kembalikan"
+                    trigger-button-icon="TimerReset"
+                    trigger-button-text="Kembalikan"
+                    trigger-button-variant="default"
+                    trigger-button-size="sm"
+                    method="get"
+                />
+                <AlertDialog
                     v-if="props.allowDelete"
                     :title="`Hapus Pengajuan ${props.item.name}?`"
                     :uri="deleteUri"
@@ -73,12 +86,14 @@ const props = defineProps<{
     item: Reimbursement,
     allowDelete: boolean,
     allowRespond?: boolean,
+    allowRestore?:boolean,
     updateList: () => void
 }>()
 
 // compute
 const value = computed(() => formatCurrency(props.item.amount))
 const deleteUri = route('reimbursement.main.delete') + `?id=${props.item.id}`
+const restoreUri = route('reimbursement.main.restore') + `?id=${props.item.id}`
 
 const viewItem = (id: string) => {
     router.visit(route('view.application.examine', id))

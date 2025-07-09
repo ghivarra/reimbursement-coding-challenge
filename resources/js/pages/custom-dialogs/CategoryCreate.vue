@@ -72,6 +72,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, Dialog
 import Input from '@/components/ui/input/Input.vue'
 import { inject, Ref, ref } from 'vue'
 import axios, { AxiosResponse } from 'axios'
+import swal from 'sweetalert'
 
 // inject
 const csrfHash: string|undefined = inject('csrfHash')

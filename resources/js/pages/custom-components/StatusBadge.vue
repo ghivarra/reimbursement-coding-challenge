@@ -15,6 +15,7 @@ const props = defineProps<{
 
 const colors = [
     {status: 'Dihapus', colorClass: 'bg-fuchsia-700'},
+    {status: 'Direstorasi', colorClass: 'bg-amber-700'},
     {status: 'Diajukan', colorClass: 'bg-blue-400'},
     {status: 'Ditolak', colorClass: 'bg-red-400'},
     {status: 'Dikembalikan', colorClass: 'bg-amber-400 text-dark'},

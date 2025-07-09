@@ -12,6 +12,14 @@ class RoleManagementLibrary
 {
     public function getUserAccess(int $userID): array|false
     {
+        // check if session already exist
+        $access = session('access', null);
+        
+        if (!is_null($access))
+        {
+            return $access;
+        }
+
         // get current user data
         $user = User::select('users.role_id', 'is_superadmin')
                     ->join('roles', 'users.role_id', '=', 'roles.id')

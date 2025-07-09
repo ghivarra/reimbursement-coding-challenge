@@ -36,6 +36,7 @@ import Button from '@/components/ui/button/Button.vue'
 import { AlertDialogAction } from 'reka-ui'
 import { inject } from 'vue'
 import axios, { AxiosResponse } from 'axios'
+import swal from 'sweetalert'
 
 // inject
 const csrfHash: string|undefined = inject('csrfHash')

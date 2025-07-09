@@ -4,7 +4,7 @@
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
             <Heading title="Arsip" description="Halaman pengajuan reimbursement yang dihapus oleh pembuat." class="mb-0" />
             <div class="relative max-w-[260px] mb-2">
-                <Input placeholder="Cari Pengajuan..." />
+                <Input v-model="query" placeholder="Cari Pengajuan..." />
                 <Icon class="absolute right-[0.75rem] top-[0.5rem]" name="Search" />
             </div>
             
