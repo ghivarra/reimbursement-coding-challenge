@@ -25,7 +25,7 @@ class ApplicationController extends Controller
     public function examine(string $id): Response
     {
         // get id
-        $application = Reimbursement::where('id', $id)->first();
+        $application = Reimbursement::withTrashed()->where('id', $id)->first();
 
         // abort if empty
         if (empty($application))

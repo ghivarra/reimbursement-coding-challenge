@@ -48,7 +48,7 @@
             <section>
                 <div v-for="(log, key) in logCollections" :key="key" class="w-full flex border-2 mb-4">
                     <div class="flex items-center w-1/2 p-4">
-                        <StatusBadge :status="(reimbursement?.deleted_at === null) ? log.status_name : 'Dihapus'" />
+                        <StatusBadge :status="log.status_name" />
                         <div class="pl-4">{{ formatDateTime(log.time) }}</div>
                     </div>
                     <div class="w-1/2 p-4">

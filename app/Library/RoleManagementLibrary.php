@@ -73,7 +73,7 @@ class RoleManagementLibrary
         $searchRoute = [
             'all',
             'approver',
-            'with-removed',
+            'with.removed',
             'self',
         ];
 

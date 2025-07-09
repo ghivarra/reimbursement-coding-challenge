@@ -434,7 +434,7 @@ class MainController extends Controller
                 break;
 
             case 'archive':
-                $orm->whereNotNull('deleted_at');
+                $orm->whereNotNull('reimbursements.deleted_at');
                 break;
 
             case 'self':

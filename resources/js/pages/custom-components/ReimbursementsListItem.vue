@@ -2,7 +2,7 @@
     <Card class="bg-linear-to-t from-gray-50 to-white">
         <CardHeader>
             <div class="mb-2">
-                <StatusBadge :status="(props.item.deleted_at === null) ? props.item.status_name : 'Dihapus'" />
+                <StatusBadge :status="props.item.status_name" />
             </div>
             <CardTitle>{{ props.item.name }}</CardTitle>
             <CardDescription>

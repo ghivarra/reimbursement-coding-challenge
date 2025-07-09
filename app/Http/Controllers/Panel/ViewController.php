@@ -29,6 +29,16 @@ class ViewController extends Controller
 
     //=====================================================================================================
 
+    public function archive(): Response
+    {
+        return Inertia::render('Archive', [
+            'csrfHash' => csrf_token(),
+            'access'   => session('access')
+        ]);
+    }
+
+    //=====================================================================================================
+
     public function category(): Response
     {
         return Inertia::render('Category', [
