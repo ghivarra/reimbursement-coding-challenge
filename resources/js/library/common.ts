@@ -32,7 +32,9 @@ const hasAccess = (moduleName: string, modules?: AccessModule[]): boolean => {
 
 const formatCurrency = (value: number): string => {
     const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
-    return formatter.format(value)
+    const amount = formatter.format(value)
+
+    return (amount.includes(',00')) ? amount.slice(0, (amount.length - 3)) : amount
 }
 
 function padNumber(num: number, size: number): string {

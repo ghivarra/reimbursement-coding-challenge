@@ -50,4 +50,25 @@ export interface AccessProp {
     modules: AccessModule[]
 }
 
+export interface ReimbursementListItem {
+    id: string,
+    name: string,
+    number: string,
+    owner_id: number,
+    owner_name: string,
+    status_id: number,
+    status_name: string,
+    amount: number,
+    approver_id: number | null,
+    approver_name: string | null,
+    category_id: number,
+    category_name: string,
+    file: string,
+    date: string,
+    description?: string,
+    created_at?: string,
+    updated_at?: string,
+    deleted_at?: string | null
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;

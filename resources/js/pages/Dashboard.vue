@@ -3,7 +3,7 @@
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <div class="bg-green-50 text-green- p-4 rounded-md">
+            <div class="bg-green-50 text-green-700 p-4 rounded-md">
                 Selamat datang <b>{{ props.userData.name }}</b>, anda login sebagai <b>{{ props.userData.role_name }}</b>.
             </div>
         </div>
@@ -16,7 +16,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { AccessProp, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { defineProps, provide } from 'vue';
-// import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

@@ -16,7 +16,13 @@
         <CardFooter>
             <div class="flex">
                 <CategoryUpdate :id="props.id" v-on:update="props.updateList()" />
-                <CategoryDelete :id="props.id" :name="props.name" v-on:delete="props.updateList()" />
+                <DeleteDialog 
+                    :title="`Apakah anda yakin akan ketagori menghapus ${props.name}?`" 
+                    :uri="deleteUri"
+                    description="Aksi ini tidak bisa diputar balik dan kategori akan terhapus secara permanen." 
+                    button-text="Ya, Hapus"
+                />
+                <!--<CategoryDelete :id="props.id" :name="props.name" v-on:delete="props.updateList()" />-->
             </div>
         </CardFooter>
     </Card>
@@ -33,8 +39,9 @@ import CardDescription from '@/components/ui/card/CardDescription.vue'
 import CardAction from '@/components/ui/card/CardAction.vue'
 import { computed } from 'vue'
 import { formatCurrency } from '@/library/common'
-import CategoryDelete from '../custom-dialogs/CategoryDelete.vue'
+// import CategoryDelete from '../custom-dialogs/CategoryDelete.vue'
 import CategoryUpdate from '../custom-dialogs/CategoryUpdate.vue'
+import DeleteDialog from '../custom-dialogs/DeleteDialog.vue'
 
 const props = defineProps<{
     id: number,
@@ -45,5 +52,6 @@ const props = defineProps<{
 }>()
 
 const limitStr = computed(() => formatCurrency(props.limit))
+const deleteUri = route('reimbursement.category.delete') + `?id=${props.id}`
 
 </script>
