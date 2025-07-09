@@ -91,6 +91,7 @@ class CategoryController extends Controller
 
         // return
         return response()->json([
+            'status'  => 'success',
             'message' => 'Data berhasil dibuat',
             'data'    => $cat,
         ], 200);

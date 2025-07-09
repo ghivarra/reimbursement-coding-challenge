@@ -52,9 +52,11 @@
                             Batal
                         </Button>
                     </DialogClose>
-                    <Button @click.prevent="saveForm" type="submit">
-                        Simpan Data
-                    </Button>
+                    <DialogClose>
+                        <Button @click.prevent="saveForm" type="submit">
+                            Simpan Data
+                        </Button>
+                    </DialogClose>
                 </DialogFooter>
 
             </DialogContent>
@@ -113,7 +115,6 @@ const saveForm = () => {
         .then((response: AxiosResponse) => {
             const res = response.data
             if (res.status === 'success') {
-                dialogCloseButton.value?.click()
                 emit('insert')
             }
         })

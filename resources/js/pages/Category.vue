@@ -4,7 +4,7 @@
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
             <Heading title="Kategori Reimbursement" description="Mencakup pembuatan, modifikasi, dan penghapusan kategori reimbursement" class="mb-0" />
 
-            <CategoryCreate />
+            <CategoryCreate v-on:insert="updateCategories" />
 
             <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="relative mb-2">
