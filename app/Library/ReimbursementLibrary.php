@@ -24,7 +24,7 @@ class ReimbursementLibrary
         $dates = explode('-', $date);
 
         // get id disetujui
-        $status = ReimbursementStatus::select('id')->whereNotIn('name', ['Disetujui', 'Dikembalikan'])->get();
+        $status = ReimbursementStatus::select('id')->whereIn('name', ['Diajukan', 'Disetujui'])->get();
 
         // get category
         $cat = ReimbursementCategory::select('id', 'limit_per_month')
