@@ -7,8 +7,8 @@ Aplikasi pengajuan reimbursement simpel dengan menggunakan Laravel 12 &amp; VueJ
 - Database MySQL atau MariaDB
 
 ## Cara Instalasi
-- Download atau clone repository
-- Pindah pada root folder/aplikasi
+- Download atau clone repository dengan command `git clone git@github.com:ghivarra/reimbursement-coding-challenge nama_folder`
+- Pindah pada root folder/aplikasi atau buka folder `nama_folder` barusan
 - Jalankan command `bash install.sh`
 - Sesuaikan konfigurasi file `.env` terutama database dan email
 - Jalankan command `bash migrate.sh`
