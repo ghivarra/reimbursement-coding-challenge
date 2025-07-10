@@ -1,4 +1,4 @@
-# reimbursement-coding-challenge
+# Reimbursement Coding Challenge
 Aplikasi pengajuan reimbursement simpel dengan menggunakan Laravel 12 &amp; VueJS 3
 
 ## Dependency
@@ -76,7 +76,7 @@ Lalu kemudian user yang berhasil login akan diidentifikasi role-nya sebagai admi
 
  - Apabila sebagai Admin, maka dia hanya bisa memantau proses bisnis aplikasi.
  - Apabila sebagai Employee, maka dia bisa melakukan proses bisnis dari awal sampai akhir dari mulai membuat/merevisi pengajuan, lalu menghapus pengajuan.
- - Apabila sebagai Manajer, maka dia hanya bisa melakukan persetujuan ditolak/diterima/dikembalikannya pengajuan dari Employee dan memantau proses bisnis yang masuk ke akunnya.
+ - Apabila sebagai Manager, maka dia hanya bisa melakukan persetujuan ditolak/diterima/dikembalikannya pengajuan dari Employee dan memantau proses bisnis yang masuk ke akunnya.
  
 ## Flow Data dari Backend ke Frontend dan Sebaliknya
 
@@ -85,3 +85,23 @@ Lalu kemudian user yang berhasil login akan diidentifikasi role-nya sebagai admi
 Saya menerapkan flow arsitektur modern dengan meminimalisir adanya request yang dilakukan user selain tampilan atau view menggunakan perpindahan halaman. Alias AJAX-heavy website menggunakan Vue JS 3 SSR (Server-Side Rendering) yang didukung oleh Laravel 12.
 
 Hal ini memudahkan saya fokus ke tampilan tanpa perlu banyak menerapkan logic rumit pada controller dan memindahkan kerumitan di controller ke frontend. Selain memindahkan kerumitan, tentunya memindahkan beban kalkulasi/processing juga kepada frontend.
+
+## Flow Data Input Reimbursement
+
+![Flow Input Data](https://github.com/ghivarra/reimbursement-coding-challenge/blob/main/Dokumentasi/gambar/flow-input-data.png)
+
+Untuk proses/teknik input dari pengajuan reimbursement itu sendiri, saya menerapkan proses mengirim menggunakan XHR atau AJAX ke Backend yang kemudian sebagian datanya disimpan di database oleh Backend. 
+
+Namun ada beberapa data yang perlu menggunakan fitur Scheduler atau Queue, yakni:
+
+1. Generate Nomor Pengajuan Reimbursement
+
+Karena dalam penerapan nyatanya reimbursement ini dekat dengan administrasi, maka saya memutuskan ada yang namanya nomor menyerupai nomor surat. Karena admin sangat suka sekali dengan excelnya terutama apabila untuk nomor yang berurutan. 
+
+Contohnya 00001/TRNX/REIMBURSE/VII/2025 di mana 00001 adalah nomor urutan di bulan tersebut, TRNX adalah kode Kategori reimbursement, REIMBURSE adalah kode reimbursement, VII adalah kode bulan, dan 2025 adalah tahun.
+
+Nah, untuk nomor yang berurutan tentunya perlu dihindari yang namanya *racing condition* dan kondisi balapan tersebut bisa dihindari dengan menerapkan fitur Queue atau Scheduler.
+
+2. Kirim Notifikasi Email ke Manager
+
+Ini adalah hal yang umum diterapkan pada aplikasi, yakni menggunakan queue untuk mengirim email. Selain memberikan kesan tanpa menunggu dan realtime bagi pengguna saat input data, hal ini juga meringankan beban proses server
