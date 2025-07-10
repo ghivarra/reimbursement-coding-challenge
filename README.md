@@ -74,9 +74,9 @@ Saya menerapkan flow yang tidak begitu rumit. Jadi user masuk ke halaman login d
 
 Lalu kemudian user yang berhasil login akan diidentifikasi role-nya sebagai admin, employee, atau manajer.
 
- - Apabila sebagai Admin, maka dia hanya bisa memantau proses bisnis aplikasi.
- - Apabila sebagai Employee, maka dia bisa melakukan proses bisnis dari awal sampai akhir dari mulai membuat/merevisi pengajuan, lalu menghapus pengajuan.
- - Apabila sebagai Manager, maka dia hanya bisa melakukan persetujuan ditolak/diterima/dikembalikannya pengajuan dari Employee dan memantau proses bisnis yang masuk ke akunnya.
+ - Apabila sebagai **Admin**, maka dia hanya bisa memantau proses bisnis aplikasi.
+ - Apabila sebagai **Employee**, maka dia bisa melakukan proses bisnis dari awal sampai akhir dari mulai membuat/merevisi pengajuan, lalu menghapus pengajuan.
+ - Apabila sebagai **Manager**, maka dia hanya bisa melakukan persetujuan ditolak/diterima/dikembalikannya pengajuan dari Employee dan memantau proses bisnis yang masuk ke akunnya.
  
 ## Flow Data dari Backend ke Frontend dan Sebaliknya
 
@@ -94,7 +94,7 @@ Untuk proses/teknik input dari pengajuan reimbursement itu sendiri, saya menerap
 
 Namun ada beberapa data yang perlu menggunakan fitur Scheduler atau Queue, yakni:
 
-1. Generate Nomor Pengajuan Reimbursement
+1. **Generate Nomor Pengajuan Reimbursement**
 
 Karena dalam penerapan nyatanya reimbursement ini dekat dengan administrasi, maka saya memutuskan ada yang namanya nomor menyerupai nomor surat. Karena admin sangat suka sekali dengan excelnya terutama apabila untuk nomor yang berurutan. 
 
@@ -102,6 +102,6 @@ Contohnya 00001/TRNX/REIMBURSE/VII/2025 di mana 00001 adalah nomor urutan di bul
 
 Nah, untuk nomor yang berurutan tentunya perlu dihindari yang namanya *racing condition* dan kondisi balapan tersebut bisa dihindari dengan menerapkan fitur Queue atau Scheduler.
 
-2. Kirim Notifikasi Email ke Manager
+2. **Kirim Notifikasi Email ke Manager**
 
 Ini adalah hal yang umum diterapkan pada aplikasi, yakni menggunakan queue untuk mengirim email. Selain memberikan kesan tanpa menunggu dan realtime bagi pengguna saat input data, hal ini juga meringankan beban proses server
