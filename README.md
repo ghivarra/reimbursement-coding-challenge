@@ -60,3 +60,16 @@ Di sini saya menggunakan beberapa tabel yang dipisahkan salah satunya adalah unt
 Seperti dijelaskan sebelumnya, pemisahan tabel ini sejalan dengan sifat relasional SQL yang mengutamakan pemisahan data dan merelasikan antar tabel ketimbang disatukan dalam satu tabel besar.
 
 Sekali lagi, hal ini juga dilakukan sesuai prinsip untuk mengurangi 'hard code' atau kode keras pada logic aplikasi. Khususnya karena masing-masing status memiliki ID dan template sendiri untuk generate log/catatan.
+
+## Flow Proses Bisnis
+
+![Flow Probis](https://github.com/ghivarra/reimbursement-coding-challenge/blob/main/Dokumentasi/gambar/flow-proses-bisnis.png)
+
+Saya menerapkan flow yang tidak begitu rumit. Jadi user masuk ke halaman login dan melakukan otentikasi yang kemudian dilakukan validasi apakah otentikasinya valid/tidak valid.
+
+Lalu kemudian user yang berhasil login akan diidentifikasi role-nya sebagai admin, employee, atau manajer.
+
+ - Apabila sebagai Admin, maka dia hanya bisa memantau proses bisnis aplikasi.
+ - Apabila sebagai Employee, maka dia bisa melakukan proses bisnis dari awal sampai akhir dari mulai membuat/merevisi pengajuan, lalu menghapus pengajuan.
+ - Apabila sebagai Manajer, maka dia hanya bisa melakukan persetujuan ditolak/diterima/dikembalikannya pengajuan dari Employee dan memantau proses bisnis yang masuk ke akunnya.
+ 
