@@ -119,3 +119,9 @@ Ini adalah hal yang umum diterapkan pada aplikasi, yakni menggunakan queue untuk
 - Fitur Ubah Kata Sandi untuk user.
 
 - Fitur Dark/Light Mode.
+
+## Kesulitan yang dialami
+
+- Inkonsistensi dan silent error fitur email dari Laravel. Awalnya fitur notifikasi email berjalan tanpa ada masalah. Kemudian email mendadak tidak pernah terkirim, yang akhirnya ketahuan kalau IP Address internet saya diblokir. Solusinya adalah mencari layanan SMTP yang tidak memblokir email saya. Sebagai PHP Developer saya lebih suka fitur email dari framework CodeIgniter atau library PHP SMTP, aman dan terpercaya untuk debug-nya.
+
+- Kerumitan di backend terutama di endpoint index karena masing-masing tipe role hanya bisa menarik/melihat data yang berbeda, solusinya adalah memecah switch dan if/else menggunakan endpoint masing-masing yang berbeda. Sehingga langsung diproteksi oleh Manajemen Role Middleware.
