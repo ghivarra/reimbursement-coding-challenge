@@ -1,6 +1,11 @@
 # reimbursement-coding-challenge
 Aplikasi pengajuan reimbursement simpel dengan menggunakan Laravel 12 &amp; VueJS 3
 
+## Dependency
+- PHP minimal versi 8.3
+- NodeJS versi LTS
+- Database MySQL atau MariaDB
+
 ## Cara Instalasi
 - Download atau clone repository
 - Pindah pada root folder/aplikasi
@@ -73,3 +78,10 @@ Lalu kemudian user yang berhasil login akan diidentifikasi role-nya sebagai admi
  - Apabila sebagai Employee, maka dia bisa melakukan proses bisnis dari awal sampai akhir dari mulai membuat/merevisi pengajuan, lalu menghapus pengajuan.
  - Apabila sebagai Manajer, maka dia hanya bisa melakukan persetujuan ditolak/diterima/dikembalikannya pengajuan dari Employee dan memantau proses bisnis yang masuk ke akunnya.
  
+## Flow Data dari Backend ke Frontend dan Sebaliknya
+
+![Flow Data BE-FE](https://github.com/ghivarra/reimbursement-coding-challenge/blob/main/Dokumentasi/gambar/flow-backend-frontend.png)
+
+Saya menerapkan flow arsitektur modern dengan meminimalisir adanya request yang dilakukan user selain tampilan atau view menggunakan perpindahan halaman. Alias AJAX-heavy website menggunakan Vue JS 3 SSR (Server-Side Rendering) yang didukung oleh Laravel 12.
+
+Hal ini memudahkan saya fokus ke tampilan tanpa perlu banyak menerapkan logic rumit pada controller dan memindahkan kerumitan di controller ke frontend. Selain memindahkan kerumitan, tentunya memindahkan beban kalkulasi/processing juga kepada frontend.
