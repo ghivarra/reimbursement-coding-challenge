@@ -1,7 +1,7 @@
 # Reimbursement Coding Challenge
 Aplikasi pengajuan reimbursement simpel dengan menggunakan Laravel 12 &amp; VueJS 3
 
-## Dependency
+## Dev Dependency
 - PHP minimal versi 8.3
 - NodeJS versi LTS
 - Database MySQL atau MariaDB
@@ -96,9 +96,9 @@ Namun ada beberapa data yang perlu menggunakan fitur Scheduler atau Queue, yakni
 
 1. **Generate Nomor Pengajuan Reimbursement**
 
-Karena dalam penerapan nyatanya reimbursement ini dekat dengan administrasi, maka saya memutuskan ada yang namanya nomor menyerupai nomor surat. Karena admin sangat suka sekali dengan excelnya terutama apabila untuk nomor yang berurutan. 
+Karena dalam penerapan nyatanya reimbursement ini dekat dengan administrasi, maka saya memutuskan ada yang namanya nomor menyerupai nomor surat. Karena admin sangat suka sekali dengan excelnya terutama apabila untuk nomor yang berurutan dan nomor di depannya pun berguna untuk menghitung jumlah pengajuan di bulan terkait. 
 
-Contohnya 00001/TRNX/REIMBURSE/VII/2025 di mana 00001 adalah nomor urutan di bulan tersebut, TRNX adalah kode Kategori reimbursement, REIMBURSE adalah kode reimbursement, VII adalah kode bulan, dan 2025 adalah tahun.
+Contohnya 00001/TRNX/REIMBURSE/VII/2025 di mana 00001 adalah nomor urutan di bulan tersebut yang kembali, TRNX adalah kode Kategori reimbursement, REIMBURSE adalah kode reimbursement, VII adalah kode bulan, dan 2025 adalah tahun.
 
 Nah, untuk nomor yang berurutan tentunya perlu dihindari yang namanya *racing condition* dan kondisi balapan tersebut bisa dihindari dengan menerapkan fitur Queue atau Scheduler.
 
