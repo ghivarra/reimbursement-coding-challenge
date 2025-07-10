@@ -10,7 +10,7 @@ Aplikasi pengajuan reimbursement simpel dengan menggunakan Laravel 12 &amp; VueJ
 - Download atau clone repository
 - Pindah pada root folder/aplikasi
 - Jalankan command `bash install.sh`
-- Sesuaikan konfigurasi file `.env` terutama database
+- Sesuaikan konfigurasi file `.env` terutama database dan email
 - Jalankan command `bash migrate.sh`
 - Jalankan command `composer run dev` maka aplikasi akan bisa diakses pada `http://localhost:8000` atau `http://127.0.0.1:8000`
 
