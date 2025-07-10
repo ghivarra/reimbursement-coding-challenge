@@ -32,7 +32,7 @@ class NotificationEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            // from: new Address('kontak@ghivarra.com', 'Ghivarra Senandika R'),
+            from: new Address(config('custom.email'), 'Ghivarra Senandika R'),
             subject: 'Pengajuan Reimbursement Baru Masuk!',
         );
     }

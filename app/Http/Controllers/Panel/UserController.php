@@ -106,7 +106,7 @@ class UserController extends Controller
         // get based on roles
         $result = User::select(['users.id', 'users.name', 'password', 'role_id', 'roles.name as role_name', 'email'])
                       ->join('roles', 'role_id', '=', 'roles.id')
-                      ->where('id', '=', $input['id'])
+                      ->where('users.id', '=', $input['id'])
                       ->first();
 
         // return
@@ -193,8 +193,6 @@ class UserController extends Controller
         // find
         $id   = $request->input('id');
         $user = User::find($id);
-
-        dd($id);
         
         if (empty($user))
         {

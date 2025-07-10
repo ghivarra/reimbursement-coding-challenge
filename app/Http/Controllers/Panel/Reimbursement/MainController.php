@@ -849,7 +849,7 @@ class MainController extends Controller
         // return
         return response()->json([
             'status'  => 'success',
-            'message' => 'Data berhasil diperbaharui'
+            'message' => 'Data berhasil direstorasi'
         ], 200);
     }
 

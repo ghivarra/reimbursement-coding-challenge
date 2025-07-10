@@ -49,7 +49,7 @@ class CategoryController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => ReimbursementLibrary::calculateReimbursementLimit($input['category_id'], $userID, $month),
+            'data'    => ReimbursementLibrary::calculateReimbursementLimit($input['category_id'], $userID, $input['date']),
         ], 200);
     }
 
