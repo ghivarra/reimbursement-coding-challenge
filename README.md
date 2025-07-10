@@ -105,3 +105,17 @@ Nah, untuk nomor yang berurutan tentunya perlu dihindari yang namanya *racing co
 2. **Kirim Notifikasi Email ke Manager**
 
 Ini adalah hal yang umum diterapkan pada aplikasi, yakni menggunakan queue untuk mengirim email. Selain memberikan kesan tanpa menunggu dan realtime bagi pengguna saat input data, hal ini juga meringankan beban proses server
+
+## Fitur lainnya
+
+- UUID pada id pengajuan reimbursement untuk menghindari 'guess URI attack' yang tentunya sebetulnya sudah dimitigasi dengan manajemen role user, tapi untuk menambah keamanan, dan estetika URL.
+
+- Catatan menggunakan template pada masing-masing status. Serta secara dinamis bisa berubah alias tidak 'hard code'.
+
+- Admin bisa merestorasi file yang dihapus oleh Employee.
+
+- Ada halaman CRUD Kategori Reimbursement yang hanya bisa diakses oleh Admin.
+
+- Fitur Ubah Kata Sandi untuk user.
+
+- Fitur Dark/Light Mode.
